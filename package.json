@@ -5,6 +5,12 @@
   "scripts": {
     "predev": "node scripts/predev.mjs",
     "dev": "next dev",
+    "db:migrate": "node --env-file-if-exists=.env.local scripts/migrate.mjs",
+    "site:create": "node --env-file-if-exists=.env.local scripts/create-site.mjs",
+    "site:rotate-key": "node --env-file-if-exists=.env.local scripts/rotate-site-key.mjs",
+    "posts:import": "node --env-file-if-exists=.env.local --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/import-posts.mjs",
+    "smoke:api": "node scripts/smoke-api.mjs",
+    "prebuild": "npm run db:migrate",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
@@ -12,11 +18,16 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@neondatabase/serverless": "1.2.0",
+    "@vercel/blob": "2.8.2",
     "lucide-react": "0.469.0",
     "mixpanel-browser": "2.80.0",
     "next": "15.5.29",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-markdown": "10.1.0",
+    "remark-gfm": "4.0.1",
+    "server-only": "0.0.1"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "6.9.1",

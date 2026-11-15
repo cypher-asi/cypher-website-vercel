@@ -2,11 +2,11 @@
 
 The website for **Cypher** (cypher.net), built with [Next.js 15](https://nextjs.org/) (App Router). It presents the companies, research, and mission behind a sovereign AI stack.
 
-This is the Cypher site on its own, extracted from the multi-brand `cypher-website` repo. The other brand sites (Wilder World, ZODE, ZERO, Z Chain) are not part of this project; the home page and navigation link out to their own domains.
+It is also the **content hub** for the company sites. Each site (ZODE first) writes its news and changelog posts through the `/api/v1` API with its own key and serves them back from here. ZODE OS, the ZODE portal, is the editor. Every source a post cites is indexed as research, and cypher.net shows all the writing in one terminal-style workspace.
 
 ## Prerequisites
 
-- **Node.js** LTS (20+)
+- **Node.js** 22.18+ (the scripts import TypeScript directly)
 - **npm** 10+
 
 ## Install
@@ -19,7 +19,7 @@ npm install
 
 ```bash
 npm run dev       # Start dev server (http://localhost:3000)
-npm run build     # Production build
+npm run build     # Migrate the database, then build for production
 npm run start     # Serve production build
 npm run typecheck # Type-check with tsc (no emit)
 npm test          # Run unit tests with Vitest
@@ -27,23 +27,79 @@ npm test          # Run unit tests with Vitest
 
 ## Environment
 
-The site needs no secrets. Copy `.env.example` to `.env.local` to set the one optional variable:
+Copy `.env.example` to `.env.local`, or run `vercel env pull .env.local`.
 
 | Variable | Notes |
 |----------|-------|
-| `NEXT_PUBLIC_MIXPANEL_TOKEN_CYPHER` | Mixpanel public project token. Inlined at build time, so changing it needs a rebuild. If unset, analytics is a silent no-op. |
+| `DATABASE_URL` | Neon Postgres. Holds sites, posts and the research index. `npm run build` applies `db/schema.sql` to it first, and a Vercel build fails without it. |
+| `BLOB_READ_WRITE_TOKEN` | Private Vercel Blob store for post images, under `posts/{postId}/`. |
+| `NEXT_PUBLIC_MIXPANEL_TOKEN_CYPHER` | Optional Mixpanel public project token. Inlined at build time. If unset, analytics is a silent no-op. |
+
+### Local database
+
+The app talks to Postgres through Neon's HTTP driver, so a local Postgres needs Neon's HTTP proxy in front of it:
+
+```bash
+docker network create cypher
+docker run -d --name cypher-pg --network cypher -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=main postgres:16
+docker run -d --name cypher-neon-proxy --network cypher -p 4444:4444 \
+  -e PG_CONNECTION_STRING=postgres://postgres:postgres@cypher-pg:5432/main \
+  ghcr.io/timowilhelm/local-neon-http-proxy:main
+export DATABASE_URL=postgres://postgres:postgres@db.localtest.me:5432/main
+npm run db:migrate
+```
+
+`db.localtest.me` resolves to localhost. The app and the scripts send queries for that host to the proxy on port 4444.
+
+## Content API
+
+Everything is under `/api/v1`. The contract is [`/api/v1/openapi.json`](src/app/api/v1/_lib/openapi.ts), and `openapi.test.ts` checks that it matches the route handlers.
+
+| Endpoint | Access |
+|----------|--------|
+| `GET /posts?site=&limit=&cursor=` | Public. Published posts from every site, newest first. |
+| `GET /sites/{site}/posts?kind=&withBody=1` | Public. Published posts. With the site's key, `status=draft\|published\|all` and `author=` also work. |
+| `GET /sites/{site}/posts/slug/{kind}/{slug}` | Public. One published post with its sources. |
+| `POST /sites/{site}/posts` | Site key. Creates an empty draft. |
+| `GET\|PATCH\|DELETE /sites/{site}/posts/{id}` | Site key. `PATCH { draft, publish?, editorEmail }` saves the post and re-indexes its sources. |
+| `POST /sites/{site}/posts/{id}/status` | Site key. `{ status, editorEmail }` publishes or unpublishes the post. |
+| `POST /sites/{site}/posts/{id}/upload` | Site key. Issues a Vercel Blob client upload token for the post's images. |
+| `GET /research/sources?q=` | Public. Searches the sources cited by published posts. |
+| `GET /media/{path}` | Public. Serves post images. `/post-media/*` rewrites here. |
+
+Send the site key as `Authorization: Bearer <key>`. Errors always look like `{ "error": { "code", "message" } }`, and the messages are written so they can be shown to editors as they are. Public reads are cached at the CDN for a minute. Vercel never caches a request that carries an `Authorization` header, so a site reading with its own key always sees its latest edits.
+
+### Sources as research
+
+When a post is saved, the API reads the numbered list under its `## Sources` (or Notes, References) heading, which looks like `1. Publisher, [Title](url), detail`. It also picks up inline `[n](url)` citations that have no list entry. Each URL becomes one row in `research_sources`, deduplicated by its normalized URL across every post. `post_sources` records which post cites which source, under which number.
+
+### Scripts
+
+```bash
+npm run site:create -- zode ZODE https://zode.org   # Registers a site and prints its key once
+npm run site:rotate-key -- zode                      # Replaces a site's key
+SOURCE_DATABASE_URL=… SOURCE_BLOB_READ_WRITE_TOKEN=… \
+  npm run posts:import -- --site zode                # Copies a site's old posts and images (idempotent)
+npm run smoke:api -- --base https://cypher-website-vercel.vercel.app \
+  --site smoke --key <smoke key> [--other-key <another site's key>]   # Checks a deployment end to end
+```
+
+The smoke test publishes a throwaway post for a few seconds, so give it a site of its own (`site:create smoke "Smoke test" https://example.com`).
 
 ## Deployment
 
-Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. Set `NEXT_PUBLIC_MIXPANEL_TOKEN_CYPHER` in the Vercel project's environment variables to turn analytics on.
+Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. The project needs a Neon database and a private Blob store attached, which provide `DATABASE_URL` and `BLOB_READ_WRITE_TOKEN`. Each build migrates its database first.
 
 ## Pages
 
 | Route | Description |
 |-------|-------------|
-| `/` | Landing page: the company grid and key facts |
+| `/` | Workspace: Writing and Companies on the left, the latest post in the center, its sources on the right |
+| `/writing/{site}/{kind}/{slug}` | The workspace with one post open. `?company=` filters Writing to one company. |
+| `/companies` | The company grid and key facts |
 | `/vision` | Mission statement |
 | `/research` | Research index, with papers at `/research/the-grid`, `/research/aura-harness`, `/research/zns` and `/research/zero-os` |
+| `/research/sources` | Search every source cited by the writing |
 | `/privacy`, `/terms` | Legal documents |
 | `/contact` | Contact details |
 | `/docs` | Getting-started guide |
@@ -52,14 +108,22 @@ Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. 
 ## Project Structure
 
 ```
+db/schema.sql           # Sites, posts, research_sources, post_sources
+scripts/                # migrate, site:create, site:rotate-key, posts:import, smoke:api
 src/
   app/                  # Routes, root layout, providers, favicon (icon.tsx)
+    api/v1/             # Content API and its OpenAPI description
     styles/globals.css  # Design tokens, theme variables, resets
-  components/           # Shared chrome and UI (Nav, Footer, ProductGrid, Facts, ...)
-  sites/cypher/         # Landing page
-  features/analytics/   # Analytics boundary and its Mixpanel provider
+  components/           # Shared chrome and UI (Footer, ProductGrid, Facts, ...)
+  features/
+    posts/              # Post types, validation, repository, API-key auth, Blob helpers
+    research/           # Source extraction, indexing and search
+    terminal/           # Terminal bar and the workspace panels
+    analytics/          # Analytics boundary and its Mixpanel provider
+  sites/cypher/         # Company grid page
   lib/
-    site.ts             # Nav, footer, metadata and theme defaults
+    site.ts             # Nav, companies, footer, metadata and theme defaults
+    db.ts               # Neon client
     fonts.ts            # Font loaders
 public/images/          # Brand, company card, and research images
 ```
@@ -70,4 +134,4 @@ public/images/          # Brand, company card, and research images
 - **Global CSS** with design tokens and theme variables imported once in `layout.tsx`
 - **Theme**: `ThemeProvider` in `ThemeContext.tsx` manages dark/light mode via the `data-theme` attribute on `<html>`, persisted to `localStorage`
 - **Client boundary**: any component using theme hooks or interactive state is marked `"use client"`
-- **Fonts**: Inter (sans-serif) and JetBrains Mono (monospace) via `next/font/google`
+- **Fonts**: JetBrains Mono (the terminal face) and Inter via `next/font/google`

@@ -31,10 +31,12 @@ Object.defineProperty(globalThis, 'localStorage', {
   value: memoryStorage,
   configurable: true,
 });
-Object.defineProperty(window, 'localStorage', {
-  value: memoryStorage,
-  configurable: true,
-});
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: memoryStorage,
+    configurable: true,
+  });
+}
 
 afterEach(() => {
   cleanup();

@@ -13,6 +13,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+      // Throws outside a React Server build; tests import server modules directly.
+      'server-only': fileURLToPath(new URL('./src/test/empty.ts', import.meta.url)),
     },
   },
 });
