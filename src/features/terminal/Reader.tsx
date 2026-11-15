@@ -62,8 +62,12 @@ function components(cited: Set<number>): Components {
 }
 
 const WORDS_PER_MINUTE = 230;
+/** Counted the way the ZODE site counts, so a post reads the same length on both. */
 const readingMinutes = (markdown: string): number =>
-  Math.max(1, Math.round(markdown.split(/\s+/).filter(Boolean).length / WORDS_PER_MINUTE));
+  Math.max(
+    1,
+    Math.round(markdown.replace(/[#>*_`~[\]()!-]/g, ' ').split(/\s+/).filter(Boolean).length / WORDS_PER_MINUTE),
+  );
 
 const postDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' });
 
