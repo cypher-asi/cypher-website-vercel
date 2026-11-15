@@ -152,6 +152,16 @@
   grid-template-columns: 1ch minmax(0, 1fr);
 }
 
+button.company {
+  width: 100%;
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
 .companyName {
   color: var(--color-text-primary);
   text-transform: uppercase;

@@ -51,7 +51,7 @@ export interface Product {
   siteHref?: string;
 }
 
-const products: Product[] = [
+export const products: Product[] = [
   {
     id: 'aura',
     name: 'AURA',
@@ -156,6 +156,9 @@ const products: Product[] = [
     siteHref: 'https://wilderworld.com',
   },
 ];
+
+export const productById = (id: string): Product | null =>
+  products.find((product) => product.id === id) ?? null;
 
 function imageStyle(product: Product, src: string): CSSProperties {
   const desktop = product.imagePosition ?? 'center';
