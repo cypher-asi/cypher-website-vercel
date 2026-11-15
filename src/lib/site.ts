@@ -57,8 +57,6 @@ export const SITE: SiteConfig = {
     { label: 'Research', href: '/' },
     { label: 'Companies', href: '/companies' },
     { label: 'Papers', href: '/research' },
-    { label: 'Code', href: GITHUB_ORG, external: true },
-    { label: 'News', href: 'https://zine.live', external: true },
     { label: 'Mission', href: '/mission' },
   ],
   companies: [
@@ -70,6 +68,8 @@ export const SITE: SiteConfig = {
   ],
   status: {
     links: [
+      { label: 'code', href: GITHUB_ORG, external: true },
+      { label: 'news', href: 'https://zine.live', external: true },
       { label: 'sources', href: '/research/sources' },
       { label: 'contact', href: '/contact' },
       { label: 'privacy', href: '/privacy' },

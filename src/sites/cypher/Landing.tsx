@@ -6,7 +6,7 @@ import styles from './Landing.module.css';
 export default function CypherLanding() {
   return (
     <Frame className={styles.frame}>
-      <Panel title="Companies">
+      <Panel title="Companies" bodyClassName={styles.gridBody}>
         <div className={styles.gridFrame}>
           <ProductGrid />
         </div>

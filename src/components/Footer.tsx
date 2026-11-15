@@ -7,11 +7,17 @@ export function Footer({ status }: { status: SiteConfig['status'] }) {
   return (
     <footer className={styles.status} aria-label="Site footer">
       <nav className={styles.links} aria-label="Footer">
-        {status.links.map((link) => (
-          <Link key={link.href} className={styles.link} href={link.href}>
-            {link.label}
-          </Link>
-        ))}
+        {status.links.map((link) =>
+          link.external ? (
+            <a key={link.label} className={styles.link} href={link.href} target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ) : (
+            <Link key={link.label} className={styles.link} href={link.href}>
+              {link.label}
+            </Link>
+          ),
+        )}
         <a className={styles.link} href={status.social.x} target="_blank" rel="noopener noreferrer">
           x
         </a>

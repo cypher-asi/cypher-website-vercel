@@ -7,13 +7,18 @@
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Cards sit inside the panel body, inset to line up with the panel title. The
-   top inset leaves room for the card hover lift, which the scrolling body clips. */
+/* Cards run full bleed: the panel body drops its own border so each card's
+   border is the only frame. The desktop grid always fits the body exactly, so
+   it can stop clipping and let the card hover lift show. */
+.frame .gridBody {
+  border: 0;
+  overflow: visible;
+}
+
 .gridFrame {
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: var(--space-1) var(--space-3) var(--space-3);
 }
 
 /* ----------------------------------------------------------------------------
@@ -467,6 +472,10 @@
    ---------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
+  .frame .gridBody {
+    overflow-y: auto;
+  }
+
   /* Shorter, wider cards on mobile crop the portrait art to its vertical
      center; use the per-card mobile position so faces/eyes stay in frame. */
   .cardImage,

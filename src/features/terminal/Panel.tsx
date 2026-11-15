@@ -6,12 +6,14 @@ export function Panel({
   title,
   meta,
   className,
+  bodyClassName,
   bodyId,
   children,
 }: {
   title: string;
   meta?: ReactNode;
   className?: string;
+  bodyClassName?: string;
   bodyId?: string;
   children: ReactNode;
 }) {
@@ -21,7 +23,7 @@ export function Panel({
         <h2 className={styles.panelTitle}>{title}</h2>
         {meta && <div className={styles.panelMeta}>{meta}</div>}
       </header>
-      <div className={styles.panelBody} id={bodyId}>
+      <div className={`${styles.panelBody} ${bodyClassName ?? ''}`} id={bodyId}>
         {children}
       </div>
     </section>
