@@ -66,15 +66,15 @@
   --transition-slow: 300ms ease-out;
 
   /* Terminal chrome: the fixed bar on top and the status line at the bottom */
-  --bar-height: 84px;
-  --status-height: 26px;
+  --bar-height: 63px;
+  --status-height: 38px;
   /* Side margin shared by the bar and the workspace, so their edges line up */
   --page-gutter: 28px;
 }
 
 @media (max-width: 900px) {
   :root {
-    --bar-height: 64px;
+    --bar-height: 48px;
     --page-gutter: 16px;
   }
 }
