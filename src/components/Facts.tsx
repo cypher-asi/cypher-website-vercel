@@ -205,13 +205,13 @@ const stack: { name: string; tags: string[][] }[] = [
 export function Facts() {
   return (
     <section id="what-we-do" className={styles.facts}>
-      <div className={styles.inner}>
+      <div>
         <article className={styles.row}>
           <p className={styles.eyebrow}>What We Do</p>
           <div className={styles.content}>
-            <h2 className={styles.heading}>
+            <h3 className={styles.heading}>
               Sovereign AI systems for an autonomous world.
-            </h2>
+            </h3>
             <p className={styles.body}>
               We build distributed protocols, micro-data centers and AI-focused
               applications that enable people, communities, and countries to own
@@ -223,7 +223,7 @@ export function Facts() {
         <article className={styles.row}>
           <p className={styles.eyebrow}>Our Vision</p>
           <div className={styles.content}>
-            <h2 className={styles.heading}>Open source decentralized AI becomes the leader.</h2>
+            <h3 className={styles.heading}>Open source decentralized AI becomes the leader.</h3>
             <p className={styles.body}>
               A future where autonomous agents work on behalf of and empower the
               individual, not the platform. Where compute, identity, and value
@@ -235,7 +235,7 @@ export function Facts() {
         <article className={styles.row}>
           <p className={styles.eyebrow}>Our Mission</p>
           <div className={styles.content}>
-            <h2 className={styles.heading}>People own their intelligence.</h2>
+            <h3 className={styles.heading}>People own their intelligence.</h3>
             <p className={styles.body}>
               We make private, verifiable, and decentralized AI the default,
               building tools and protocols that are open, private and accessible
@@ -253,7 +253,7 @@ export function Facts() {
                   <span className={styles.principleNum}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span className={styles.principleName}>{principle}</span>
+                  <span>{principle}</span>
                 </li>
               ))}
             </ol>
@@ -263,7 +263,7 @@ export function Facts() {
         <article className={styles.row}>
           <p className={styles.eyebrow}>Vertical Integration</p>
           <div className={styles.content}>
-            <h2 className={styles.heading}>From raw materials to human interaction.</h2>
+            <h3 className={styles.heading}>From raw materials to human interaction.</h3>
             <p className={styles.body}>
               We believe the best solutions are the ones considered from raw
               materials all the way to human interaction. Operating at every
@@ -276,7 +276,7 @@ export function Facts() {
                   <span className={styles.stackNum}>
                     {String(index + 1).padStart(2, '0')}
                   </span>
-                  <span className={styles.stackName}>{item.name}</span>
+                  <span>{item.name}</span>
                   <span className={styles.stackTags}>
                     {item.tags.map((line, lineIndex) => (
                       <span key={lineIndex} className={styles.stackTagLine}>
@@ -294,7 +294,7 @@ export function Facts() {
           </div>
         </article>
 
-        <article className={`${styles.row} ${styles.rowFacts}`}>
+        <article className={styles.row}>
           <p className={styles.eyebrow}>Key Facts</p>
           <div className={styles.content}>
             <dl className={styles.factTable}>
@@ -307,7 +307,7 @@ export function Facts() {
                         {fact.groups.map((group) => (
                           <div key={group.name} className={styles.productGroup}>
                             <p className={styles.productGroupName}>{group.name}</p>
-                            <ul className={`${styles.factList} ${styles.productList}`}>
+                            <ul className={styles.factList}>
                               {group.items.map((leaf) => (
                                 <li key={leaf.name} className={styles.productItem}>
                                   <span>{leaf.name}</span>

@@ -1,14 +1,16 @@
-import { Facts } from '@/components/Facts';
 import { ProductGrid } from '@/components/ProductGrid';
+import { Frame } from '@/features/terminal/Frame';
+import { Panel } from '@/features/terminal/Panel';
 import styles from './Landing.module.css';
 
 export default function CypherLanding() {
   return (
-    <div className={styles.page}>
-      <section className={styles.gridSection}>
-        <ProductGrid />
-      </section>
-      <Facts />
-    </div>
+    <Frame className={styles.frame}>
+      <Panel title="Companies">
+        <div className={styles.gridFrame}>
+          <ProductGrid />
+        </div>
+      </Panel>
+    </Frame>
   );
 }

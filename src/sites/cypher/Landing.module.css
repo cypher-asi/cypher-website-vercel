@@ -1,20 +1,19 @@
 /* ============================================================================
-   Homepage – product bento grid
+   Companies – product bento grid
    ============================================================================ */
 
-.page {
+.frame {
+  grid-template-columns: minmax(0, 1fr);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* The bento grid occupies the first viewport; the Facts section scrolls in
-   below it. */
-.gridSection {
-  height: 100vh;
-  height: 100dvh;
+/* Cards sit inside the panel body, inset to line up with the panel title. The
+   top inset leaves room for the card hover lift, which the scrolling body clips. */
+.gridFrame {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  padding: calc(var(--bar-height) + clamp(0.75rem, 2vh, 1.5rem)) clamp(0.75rem, 2vw, 1.5rem)
-    calc(var(--status-height) + clamp(0.75rem, 2vh, 1.5rem));
+  padding: var(--space-1) var(--space-3) var(--space-3);
 }
 
 /* ----------------------------------------------------------------------------
@@ -468,11 +467,6 @@
    ---------------------------------------------------------------------------- */
 
 @media (max-width: 900px) {
-  .gridSection {
-    height: auto;
-    min-height: 100dvh;
-  }
-
   /* Shorter, wider cards on mobile crop the portrait art to its vertical
      center; use the per-card mobile position so faces/eyes stay in frame. */
   .cardImage,

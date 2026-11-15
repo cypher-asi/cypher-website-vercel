@@ -59,7 +59,7 @@ export const SITE: SiteConfig = {
     { label: 'Papers', href: '/research' },
     { label: 'Code', href: GITHUB_ORG, external: true },
     { label: 'News', href: 'https://zine.live', external: true },
-    { label: 'Vision', href: '/vision' },
+    { label: 'Mission', href: '/mission' },
   ],
   companies: [
     { id: 'aura', label: 'AURA', description: 'An agentic coding system', href: 'https://aura.ai' },
