@@ -7,81 +7,78 @@
   height: var(--bar-height);
   display: flex;
   align-items: center;
-  gap: var(--space-6);
-  padding: 0 var(--space-4);
+  gap: var(--space-4);
+  padding: 0 28px;
   border-bottom: 1px solid var(--color-border-light);
   background: var(--color-bg);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
 }
 
-.prompt {
+.brandLink {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Large /CYPHER wordmark. */
+.brand {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
   white-space: nowrap;
-  min-width: 0;
+  color: var(--color-text-primary);
 }
 
-.wordmark {
-  color: var(--color-accent);
-  font-weight: var(--font-semibold);
+/* The letters type in outlined, then fill once typing completes (.brandFilled).
+   Hovering shows the outline again. */
+.brandLetters {
+  color: #000;
+  -webkit-text-stroke: 1px var(--color-text-primary);
+  paint-order: stroke fill;
+  transition: color 450ms ease;
 }
 
-.sep {
-  color: var(--color-text-muted);
+.brandFilled .brandLetters {
+  color: var(--color-text-primary);
 }
 
-.path {
-  color: var(--color-text-secondary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 40vw;
-}
-
-.cursor {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.1em;
-  margin-left: 0.4em;
-  background: var(--color-text-primary);
-  animation: blink 1.1s steps(1, end) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
+.brandLink:hover .brandFilled .brandLetters {
+  color: #000;
+  -webkit-text-stroke-color: var(--color-link-hover);
 }
 
 .links {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  margin-left: auto;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.links::-webkit-scrollbar {
-  display: none;
+  gap: 4px;
 }
 
 .link {
   display: inline-flex;
   align-items: center;
-  gap: 0.25em;
-  padding: var(--space-1) var(--space-2);
-  color: var(--color-text-secondary);
+  gap: 5px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: var(--color-text-primary);
   white-space: nowrap;
+  text-decoration: none;
   transition:
-    color var(--transition-fast),
-    background var(--transition-fast);
+    color 250ms ease,
+    text-shadow 250ms ease;
 }
 
-.link:hover {
-  color: var(--color-text-primary);
-  background: var(--color-overlay-light);
+.link:hover,
+.link[aria-current='page'] {
+  color: var(--color-link-hover, #fff);
+  text-shadow: var(--link-hover-glow, none);
 }
 
 .link[aria-current='page'] {
@@ -89,23 +86,35 @@
 }
 
 .external {
-  font-size: 0.85em;
+  font-size: 0.8em;
   color: var(--color-text-muted);
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .bar {
-    gap: var(--space-3);
-    padding: 0 var(--space-2);
+    padding: 0 16px;
   }
 
-  .path {
+  .brand {
+    font-size: 24px;
+  }
+
+  .links {
+    position: static;
+    transform: none;
+    gap: 0;
+    min-width: 0;
+    margin-left: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .links::-webkit-scrollbar {
     display: none;
   }
-}
 
-@media (prefers-reduced-motion: reduce) {
-  .cursor {
-    animation: none;
+  .link {
+    padding: 8px 10px;
+    font-size: 13px;
   }
 }

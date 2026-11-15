@@ -40,8 +40,8 @@
      in layout.tsx (see src/lib/fonts.ts). */
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains), 'Fira Code', monospace;
-  /* Headings / display face: the terminal mono, like the body. */
-  --font-display: var(--font-mono);
+  /* Headings / display face. Defaults to the body sans. */
+  --font-display: var(--font-sans);
 
   --text-2xs: 10px;
   --text-xs: 12px;
@@ -64,8 +64,14 @@
   --transition-slow: 300ms ease-out;
 
   /* Terminal chrome: the fixed bar on top and the status line at the bottom */
-  --bar-height: 44px;
+  --bar-height: 84px;
   --status-height: 26px;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --bar-height: 64px;
+  }
 }
 
 /* ============================================================================
@@ -385,7 +391,7 @@ body {
 }
 
 body {
-  font-family: var(--font-mono);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   color: var(--color-text-primary);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
