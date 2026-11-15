@@ -23,8 +23,6 @@ export function CompanyList({
             {activeId === null ? '>' : ' '}
           </span>
           <span className={styles.companyName}>all</span>
-          <span className={styles.companyDescription}>every company</span>
-          <span className={styles.companyCount}>{Object.values(counts).reduce((sum, n) => sum + n, 0)}</span>
         </Link>
       </li>
       {companies.map((company) => {
@@ -36,8 +34,6 @@ export function CompanyList({
               {active ? '>' : ' '}
             </span>
             <span className={styles.companyName}>{company.label}</span>
-            <span className={styles.companyDescription}>{company.description}</span>
-            <span className={styles.companyCount}>{count > 0 ? count : '↗'}</span>
           </>
         );
         return (

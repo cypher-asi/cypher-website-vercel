@@ -20,17 +20,6 @@
   --duration-base: 180ms;
 }
 
-.command {
-  margin-bottom: 40px;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-}
-
-.prompt {
-  color: var(--color-accent);
-}
-
 .header {
   display: flex;
   flex-direction: column;
@@ -163,6 +152,16 @@
 
 .prose .citation a:hover {
   color: var(--color-text-primary);
+}
+
+/* A cited statement, lit up with its sources while hovered (CitedProse.tsx). */
+.statement {
+  transition: color var(--transition-normal);
+}
+
+.statement[data-active],
+.prose .statement[data-active] .citation a {
+  color: var(--color-accent);
 }
 
 .prose strong {

@@ -2,7 +2,9 @@ import Markdown, { type Components, type ExtraProps } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { splitSourcesSection } from '@/features/research/extract';
 import { PostChart } from './charts/PostChart';
+import { CitedProse } from './CitedProse';
 import { sourceAnchor } from './SourcesPanel';
+import { rehypeCitedStatements } from './statements';
 import type { WritingPost } from './data';
 import styles from './Reader.module.css';
 
@@ -84,9 +86,6 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
   const host = new URL(post.canonicalUrl).host;
   return (
     <article className={styles.article}>
-      <p className={styles.command}>
-        <span className={styles.prompt}>$</span> cat {post.site}/{post.kind}/{post.slug}.md
-      </p>
       <header className={styles.header}>
         <p className={styles.meta}>
           <time dateTime={post.publishedAt}>{postDate.format(new Date(post.publishedAt))}</time>
@@ -109,11 +108,15 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
           </span>
         </p>
       </header>
-      <div className={styles.prose}>
-        <Markdown remarkPlugins={[remarkGfm]} components={components(cited)}>
+      <CitedProse className={styles.prose}>
+        <Markdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[[rehypeCitedStatements, { cited, className: styles.statement }]]}
+          components={components(cited)}
+        >
           {body}
         </Markdown>
-      </div>
+      </CitedProse>
       <p className={styles.eof}>-- end of {post.slug}.md --</p>
     </article>
   );

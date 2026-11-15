@@ -149,7 +149,7 @@
 }
 
 .company {
-  grid-template-columns: 1ch auto minmax(0, 1fr) auto;
+  grid-template-columns: 1ch minmax(0, 1fr);
 }
 
 .companyName {
@@ -157,19 +157,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   white-space: nowrap;
-}
-
-.companyDescription {
-  overflow: hidden;
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.companyCount {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
 }
 
 /* ----------------------------------------------------------------------------
@@ -198,6 +185,16 @@
 .sourceNumber {
   color: var(--color-text-muted);
   text-align: right;
+}
+
+/* Cited by the statement hovered in the post (CitedProse.tsx). */
+.source[data-active] {
+  border-left-color: var(--color-accent);
+}
+
+.source[data-active] .sourceNumber,
+.source[data-active] .sourceTitle {
+  color: var(--color-accent);
 }
 
 .sourceBody {
