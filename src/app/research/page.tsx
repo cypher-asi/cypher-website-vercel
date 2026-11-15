@@ -26,6 +26,12 @@ export default function ResearchIndex() {
         </p>
       </header>
 
+      <Link href="/research/sources" className={styles.sourcesLink}>
+        <span className={styles.sourcesPrompt}>$</span> grep ~/research/sources
+        <span className={styles.sourcesHint}>every source cited across the writing, searchable</span>
+        <ArrowUpRight size={16} className={styles.cardIcon} />
+      </Link>
+
       <section className={styles.list} aria-label="Whitepapers">
         {papers.map((paper) => (
           <Link key={paper.slug} href={`/research/${paper.slug}`} className={styles.card}>

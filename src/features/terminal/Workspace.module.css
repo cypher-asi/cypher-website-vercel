@@ -1,0 +1,300 @@
+/* ============================================================================
+   Workspace: panels filling the viewport between the bar and the status line
+   ============================================================================ */
+
+/* Pinned between the bar and the status line, so only the panels scroll. */
+.workspace {
+  position: fixed;
+  top: var(--bar-height);
+  bottom: var(--status-height);
+  left: 0;
+  right: 0;
+  display: grid;
+  grid-template-columns: minmax(280px, 24%) minmax(0, 1fr) minmax(260px, 24%);
+  gap: var(--space-2);
+  padding: var(--space-2);
+  font-family: var(--font-mono);
+}
+
+.left {
+  display: grid;
+  grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-2);
+  min-height: 0;
+}
+
+/* ----------------------------------------------------------------------------
+   Panel
+   ---------------------------------------------------------------------------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  border: 1px solid var(--color-border-light);
+  background: var(--color-bg);
+}
+
+.panel:focus-within {
+  border-color: var(--color-text-muted);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  height: 30px;
+  padding: 0 var(--space-3);
+  border-bottom: 1px solid var(--color-border-light);
+  background: var(--color-surface);
+  font-size: var(--text-xs);
+}
+
+.panelTitle {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.panelTitle > span {
+  color: var(--color-text-muted);
+}
+
+.panelMeta {
+  margin-left: auto;
+  color: var(--color-text-muted);
+}
+
+.panelMeta kbd {
+  font-family: inherit;
+}
+
+.panelLink:hover {
+  color: var(--color-text-primary);
+}
+
+.panelBody {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.empty {
+  padding: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ----------------------------------------------------------------------------
+   Rows: Writing and Companies
+   ---------------------------------------------------------------------------- */
+
+.rows {
+  padding: var(--space-1) 0;
+}
+
+.row,
+.company {
+  display: grid;
+  align-items: baseline;
+  column-gap: var(--space-2);
+  padding: var(--space-1-5) var(--space-3) var(--space-1-5) var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.row {
+  grid-template-columns: 1ch auto minmax(0, 1fr);
+  grid-template-areas:
+    'marker date company'
+    '. title title';
+}
+
+.row:hover,
+.company:hover {
+  background: var(--color-overlay-light);
+  color: var(--color-text-primary);
+}
+
+.row[aria-current='page'],
+.company[aria-current='page'] {
+  background: var(--color-accent-muted);
+  color: var(--color-text-primary);
+}
+
+.rowMarker {
+  color: var(--color-accent);
+  white-space: pre;
+}
+
+.row > .rowMarker {
+  grid-area: marker;
+}
+
+.rowDate {
+  grid-area: date;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.rowCompany {
+  grid-area: company;
+  font-size: var(--text-xs);
+  color: var(--color-accent);
+}
+
+.rowTitle {
+  grid-area: title;
+  margin-top: 2px;
+  line-height: var(--leading-tight);
+}
+
+.company {
+  grid-template-columns: 1ch auto minmax(0, 1fr) auto;
+}
+
+.companyName {
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.companyDescription {
+  overflow: hidden;
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.companyCount {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+/* ----------------------------------------------------------------------------
+   Sources
+   ---------------------------------------------------------------------------- */
+
+.sources {
+  padding: var(--space-1) 0;
+}
+
+.source {
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-left: 2px solid transparent;
+  font-size: var(--text-xs);
+  scroll-margin: var(--space-4);
+  transition:
+    background var(--transition-slow),
+    border-color var(--transition-slow);
+}
+
+.source:target {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-muted);
+}
+
+.sourceNumber {
+  color: var(--color-accent);
+  text-align: right;
+}
+
+.sourceBody {
+  min-width: 0;
+}
+
+.sourcePublisher {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sourceTitle {
+  display: block;
+  margin-top: 2px;
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.sourceTitle:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sourceMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  margin-top: var(--space-1);
+  color: var(--color-text-muted);
+}
+
+.sourceCited {
+  color: var(--color-text-secondary);
+}
+
+/* ----------------------------------------------------------------------------
+   Responsive: one scrolling column, the open post first after the list
+   ---------------------------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .workspace {
+    grid-template-columns: minmax(240px, 30%) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 40%);
+  }
+
+  .left {
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    margin-top: var(--bar-height);
+  }
+
+  .writing .panelBody {
+    max-height: 40vh;
+  }
+
+  .reader {
+    order: 1;
+  }
+
+  .sourcesPanel {
+    order: 2;
+  }
+
+  .left {
+    display: contents;
+  }
+
+  .companies {
+    order: 3;
+  }
+
+  .panelBody {
+    overflow: visible;
+  }
+
+  .writing .panelBody {
+    overflow-y: auto;
+  }
+}

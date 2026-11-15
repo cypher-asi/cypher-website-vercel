@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import './styles/globals.css';
-import { Nav } from '@/components/Nav';
 import { Footer } from '@/components/Footer';
 import { ThemeWrapper } from '@/components/ThemeWrapper';
 import { MusicProvider } from '@/components/MusicContext';
 import { CustomScrollbar } from '@/components/CustomScrollbar';
+import { TerminalBar } from '@/features/terminal/TerminalBar';
 import { fontVariables } from '@/lib/fonts';
 import { SITE } from '@/lib/site';
 import { Providers } from './providers';
@@ -36,15 +36,9 @@ export default function RootLayout({
           >
             <MusicProvider>
               <CustomScrollbar />
-              <Nav
-                wordmark={SITE.wordmark}
-                sections={SITE.nav}
-                pageSections={SITE.pageSections}
-              />
-              <main id="page-main">
-                {children}
-                <Footer footer={SITE.footer} />
-              </main>
+              <TerminalBar wordmark={SITE.wordmark} links={SITE.links} />
+              <main id="page-main">{children}</main>
+              <Footer status={SITE.status} />
             </MusicProvider>
           </ThemeWrapper>
         </Providers>

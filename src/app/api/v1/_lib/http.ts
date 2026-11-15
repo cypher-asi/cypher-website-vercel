@@ -1,6 +1,6 @@
 import 'server-only';
 import { revalidateTag } from 'next/cache';
-import type { Post, PostSource } from '@/features/posts/types';
+import { POSTS_TAG, type Post, type PostSource } from '@/features/posts/types';
 
 export type ErrorCode =
   | 'bad_request'
@@ -22,9 +22,6 @@ const STATUS: Record<ErrorCode, number> = {
   unavailable: 503,
   internal: 500,
 };
-
-/** Tag on every cached read of posts by this site's own pages; writes through the API expire it. */
-export const POSTS_TAG = 'posts';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',

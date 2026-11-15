@@ -43,6 +43,39 @@
   color: var(--color-text-secondary);
 }
 
+/* Sources index link */
+
+.sourcesLink {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--color-overlay-medium);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  transition: background 0.18s ease;
+}
+
+.sourcesLink:hover {
+  background: var(--color-surface);
+}
+
+.sourcesLink:hover .cardIcon {
+  color: var(--color-success);
+  transform: translate(2px, -2px);
+}
+
+.sourcesPrompt {
+  color: var(--color-accent);
+}
+
+.sourcesHint {
+  flex: 1;
+  color: var(--color-text-secondary);
+}
+
 /* Card list */
 
 .list {

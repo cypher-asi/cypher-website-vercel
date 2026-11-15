@@ -1,0 +1,227 @@
+.article {
+  max-width: 76ch;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-6) var(--space-8);
+
+  /* Tokens the charts (ported from the ZODE site) are styled with. */
+  --color-text-tertiary: var(--color-text-muted);
+  --color-border-strong: var(--color-border-light);
+  --color-border-hover: var(--color-text-muted);
+  --color-bg-elevated: var(--color-elevated);
+  --color-bg-subtle: var(--color-surface);
+  --color-surface-tint: var(--color-overlay-light);
+  --radius-inset: 0;
+  --radius-control: 0;
+  --ease-out: ease-out;
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --text-md: 15px;
+}
+
+.command {
+  margin-bottom: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.prompt {
+  color: var(--color-accent);
+}
+
+.header {
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px dashed var(--color-border-light);
+}
+
+.title {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: var(--font-semibold);
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.summary {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  margin-top: var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.meta > span:first-child {
+  color: var(--color-accent);
+}
+
+.meta a:hover {
+  color: var(--color-text-primary);
+}
+
+.prose {
+  font-size: var(--text-md);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.prose > * + * {
+  margin-top: 1.1em;
+}
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-weight: var(--font-semibold);
+  line-height: 1.3;
+}
+
+.prose h2 {
+  margin-top: 2.2em;
+  font-size: var(--text-lg);
+}
+
+.prose h2::before {
+  content: '## ';
+  color: var(--color-text-muted);
+}
+
+.prose h3 {
+  margin-top: 1.8em;
+  font-size: var(--text-md);
+}
+
+.prose h3::before {
+  content: '### ';
+  color: var(--color-text-muted);
+}
+
+.prose h2 + *,
+.prose h3 + *,
+.prose h4 + * {
+  margin-top: 0.6em;
+}
+
+.prose a {
+  text-decoration: underline;
+  text-decoration-color: var(--color-text-muted);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--transition-normal);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.citation {
+  margin-left: 0.1em;
+  font-size: 0.72em;
+  line-height: 0;
+}
+
+.prose .citation a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.prose .citation a:hover {
+  background: var(--color-accent-muted);
+}
+
+.prose strong {
+  font-weight: var(--font-semibold);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.6em;
+}
+
+.prose ul {
+  list-style: '- ';
+}
+
+.prose ol {
+  list-style: decimal;
+}
+
+.prose li + li {
+  margin-top: 0.4em;
+}
+
+.prose li::marker {
+  color: var(--color-text-muted);
+}
+
+.prose blockquote {
+  padding-left: 1em;
+  border-left: 2px solid var(--color-accent);
+  color: var(--color-text-secondary);
+}
+
+.prose code {
+  padding: 0.1em 0.35em;
+  background: var(--color-overlay-light);
+  font-size: 0.9em;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-surface);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.prose pre code {
+  padding: 0;
+  background: none;
+}
+
+.prose hr {
+  margin: 2.4em 0;
+  border: 0;
+  border-top: 1px dashed var(--color-border-light);
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.prose th,
+.prose td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border-light);
+  text-align: left;
+}
+
+.prose th {
+  font-weight: var(--font-semibold);
+}
+
+.eof {
+  margin-top: var(--space-8);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .article {
+    padding: var(--space-4);
+  }
+}

@@ -1,0 +1,88 @@
+import Link from 'next/link';
+import { SITE, companyLabelForSite, type Company } from '@/lib/site';
+import { CompanyList } from './CompanyList';
+import { Panel } from './Panel';
+import { Reader } from './Reader';
+import { SourcesList } from './SourcesPanel';
+import { WritingList } from './WritingList';
+import { loadCounts, loadFeed, loadPost, type WritingItem, type WritingPost } from './data';
+import styles from './Workspace.module.css';
+
+/**
+ * The home workspace: Writing over Companies on the left, the open post in
+ * the middle, and its sources on the right. Opens `target`, or else the
+ * latest post (of `company`, when set).
+ */
+export async function Workspace({
+  company,
+  target,
+}: {
+  company: Company | null;
+  target?: { site: string; kind: string; slug: string };
+}) {
+  const [feed, counts] = await Promise.all([loadFeed(), loadCounts()]);
+  const rows = (feed ?? [])
+    .filter((item) => !company || item.site === company.siteId)
+    .map((item) => ({ ...item, company: companyLabelForSite(item.site) }));
+
+  const open: Pick<WritingItem, 'site' | 'kind' | 'slug'> | undefined = target ?? rows[0];
+  const post: WritingPost | null | 'unavailable' = open ? await loadPost(open.site, open.kind, open.slug) : null;
+  const query = company ? `company=${company.id}` : '';
+
+  return (
+    <div className={styles.workspace}>
+      <div className={styles.left}>
+        <Panel
+          title="Writing"
+          className={styles.writing}
+          meta={company ? `${company.label} · ${rows.length}` : rows.length}
+        >
+          {feed === null ? (
+            <p className={styles.empty}>Writing is unavailable right now.</p>
+          ) : rows.length ? (
+            <WritingList rows={rows} activeId={post && post !== 'unavailable' ? post.id : null} query={query} />
+          ) : (
+            <p className={styles.empty}>No writing yet.</p>
+          )}
+        </Panel>
+        <Panel
+          title="Companies"
+          className={styles.companies}
+          meta={
+            <Link className={styles.panelLink} href="/companies">
+              grid ↗
+            </Link>
+          }
+        >
+          <CompanyList companies={SITE.companies} counts={counts} activeId={company?.id ?? null} />
+        </Panel>
+      </div>
+
+      <Panel title="Read" className={styles.reader} meta={post && post !== 'unavailable' ? <kbd>j / k</kbd> : undefined}>
+        {post === 'unavailable' ? (
+          <p className={styles.empty}>This post couldn&apos;t be loaded. Please try again.</p>
+        ) : post ? (
+          <Reader post={post} company={companyLabelForSite(post.site)} />
+        ) : (
+          <p className={styles.empty}>Nothing to read yet.</p>
+        )}
+      </Panel>
+
+      <Panel
+        title="Sources"
+        className={styles.sourcesPanel}
+        meta={
+          <Link className={styles.panelLink} href="/research/sources">
+            index ↗
+          </Link>
+        }
+      >
+        {post && post !== 'unavailable' ? (
+          <SourcesList sources={post.sources} />
+        ) : (
+          <p className={styles.empty}>Open a post to see its sources.</p>
+        )}
+      </Panel>
+    </div>
+  );
+}

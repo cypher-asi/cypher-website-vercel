@@ -14,6 +14,9 @@ export const MAX_BODY_LENGTH = 200_000;
 
 export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+/** Tag on every cached read of posts by this site's own pages; writes through the API expire it. */
+export const POSTS_TAG = 'posts';
+
 /** Every image uploaded for a post is stored under this prefix. */
 export const MEDIA_PREFIX = 'posts/';
 export const postBlobPrefix = (postId: string): string => `${MEDIA_PREFIX}${postId}/`;

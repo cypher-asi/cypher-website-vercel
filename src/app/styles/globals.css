@@ -40,8 +40,8 @@
      in layout.tsx (see src/lib/fonts.ts). */
   --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-jetbrains), 'Fira Code', monospace;
-  /* Headings / display face. Defaults to the body sans. */
-  --font-display: var(--font-sans);
+  /* Headings / display face: the terminal mono, like the body. */
+  --font-display: var(--font-mono);
 
   --text-2xs: 10px;
   --text-xs: 12px;
@@ -62,6 +62,10 @@
   --transition-fast: 75ms ease-out;
   --transition-normal: 150ms ease-out;
   --transition-slow: 300ms ease-out;
+
+  /* Terminal chrome: the fixed bar on top and the status line at the bottom */
+  --bar-height: 44px;
+  --status-height: 26px;
 }
 
 /* ============================================================================
@@ -369,7 +373,7 @@ h6 {
    Base styles
    ============================================================================ */
 html {
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(var(--bar-height) + 1rem);
   background: var(--color-bg);
 }
 
@@ -381,11 +385,12 @@ body {
 }
 
 body {
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-mono);
   color: var(--color-text-primary);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   min-height: 100dvh;
+  padding-bottom: var(--status-height);
   /* `clip` (not `hidden`) prevents horizontal overflow without turning <body>
      into a scroll container, which would break `position: sticky` descendants
      such as the whitepaper table of contents. */
@@ -451,19 +456,6 @@ code {
   font-feature-settings:
     'liga' on,
     'calt' on;
-}
-
-/* Page content blur while the desktop mega-panel is open.
-   The transition lives on the base element so the blur fades both in (class
-   added) and out (class removed). */
-#page-main {
-  transition: filter 300ms ease;
-}
-
-.page-blurred {
-  filter: blur(6px);
-  pointer-events: none;
-  user-select: none;
 }
 
 /* ============================================================================
