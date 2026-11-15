@@ -10,7 +10,6 @@
   gap: var(--space-4);
   padding: 0 var(--page-gutter);
   background: var(--site-fade-to);
-  font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--color-text-muted);
 }
