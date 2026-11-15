@@ -12,7 +12,7 @@
   right: 0;
   display: grid;
   gap: var(--space-3);
-  padding: var(--space-4) var(--page-gutter) 0;
+  padding: 0 var(--page-gutter);
   font-variant-numeric: tabular-nums;
 }
 
@@ -36,22 +36,16 @@
   flex-direction: column;
   min-height: 0;
   min-width: 0;
-  border: 1px solid var(--color-border-light);
 }
 
-.panel:focus-within {
-  border-color: var(--site-border-action);
-}
-
-/* A framed strip of filled cells, inset from the panel edges and set off from
-   the body below. */
+/* A framed strip of filled cells above the panel body, matching its width. */
 .panelHeader {
   display: flex;
   align-items: stretch;
   gap: 2px;
   flex-shrink: 0;
   height: 30px;
-  margin: var(--space-2);
+  margin-bottom: var(--space-2);
   padding: 2px;
   border: 1px solid var(--color-border-light);
   font-family: var(--font-mono), 'Fira Code', monospace;
@@ -96,6 +90,11 @@
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
+  border: 1px solid var(--color-border-light);
+}
+
+.panel:focus-within .panelBody {
+  border-color: var(--site-border-action);
 }
 
 .empty {
