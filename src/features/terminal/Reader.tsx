@@ -45,7 +45,7 @@ function components(cited: Set<number>): Components {
         return (
           <sup className={styles.citation}>
             <a href={`#${sourceAnchor(number)}`} aria-label={`Source ${number}`}>
-              [{number}]
+              {number}
             </a>
           </sup>
         );
@@ -65,6 +65,14 @@ const WORDS_PER_MINUTE = 230;
 const readingMinutes = (markdown: string): number =>
   Math.max(1, Math.round(markdown.split(/\s+/).filter(Boolean).length / WORDS_PER_MINUTE));
 
+const postDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' });
+
+/** First and last initials, or the first two letters of a single name, for the byline avatar. */
+function initials(name: string): string {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] ?? '?').slice(0, 2)).toUpperCase();
+}
+
 /** The open post, its sources list left to the Sources panel. Raw HTML in the source is never rendered. */
 export function Reader({ post, company }: { post: WritingPost; company: string }) {
   const { body } = splitSourcesSection(post.bodyMd);
@@ -76,16 +84,25 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
         <span className={styles.prompt}>$</span> cat {post.site}/{post.kind}/{post.slug}.md
       </p>
       <header className={styles.header}>
-        <h1 className={styles.title}>{post.title}</h1>
-        {post.summary && <p className={styles.summary}>{post.summary}</p>}
         <p className={styles.meta}>
+          <time dateTime={post.publishedAt}>{postDate.format(new Date(post.publishedAt))}</time>
+          <span aria-hidden="true">·</span>
           <span>{company}</span>
-          <span>{post.publishedAt.slice(0, 10)}</span>
-          <span>{post.authorName}</span>
-          <span>{readingMinutes(body)} min read</span>
+          <span aria-hidden="true">·</span>
+          <span className={styles.kind}>{post.kind}</span>
+          <span aria-hidden="true">·</span>
           <a href={post.canonicalUrl} target="_blank" rel="noopener noreferrer">
             {host} ↗
           </a>
+        </p>
+        <h1 className={styles.title}>{post.title}</h1>
+        <p className={styles.byline}>
+          <span className={styles.avatar} aria-hidden="true">
+            {initials(post.authorName)}
+          </span>
+          <span>
+            {post.authorName} · {readingMinutes(post.bodyMd)} min read
+          </span>
         </p>
       </header>
       <div className={styles.prose}>

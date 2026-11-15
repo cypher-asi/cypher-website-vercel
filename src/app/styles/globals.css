@@ -42,6 +42,8 @@
   --font-mono: var(--font-jetbrains), 'Fira Code', monospace;
   /* Headings / display face. Defaults to the body sans. */
   --font-display: var(--font-sans);
+  /* Post titles, in the ZODE site's light headline face. */
+  --font-headline: var(--font-albert), system-ui, -apple-system, sans-serif;
 
   --text-2xs: 10px;
   --text-xs: 12px;

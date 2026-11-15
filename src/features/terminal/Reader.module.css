@@ -1,9 +1,12 @@
+/* The ZODE site's reading column: 696px of text inside 32px gutters. */
 .article {
-  max-width: 76ch;
+  max-width: 760px;
   margin: 0 auto;
-  padding: var(--space-6) var(--space-6) var(--space-8);
+  padding: 48px 32px 96px;
 
-  /* Tokens the charts (ported from the ZODE site) are styled with. */
+  /* The ZODE site's type scale, and the tokens its charts are styled with. */
+  --text-md: 16px;
+  --text-lg: 20px;
   --color-text-tertiary: var(--color-text-muted);
   --color-border-strong: var(--color-border-light);
   --color-border-hover: var(--color-text-muted);
@@ -15,11 +18,10 @@
   --ease-out: ease-out;
   --duration-fast: 120ms;
   --duration-base: 180ms;
-  --text-md: 16px;
 }
 
 .command {
-  margin-bottom: var(--space-5);
+  margin-bottom: 40px;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
   color: var(--color-text-muted);
@@ -30,38 +32,62 @@
 }
 
 .header {
-  padding-bottom: var(--space-5);
-  margin-bottom: var(--space-6);
-  border-bottom: 1px dashed var(--color-border-light);
-}
-
-.title {
-  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
-  font-weight: var(--font-semibold);
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-}
-
-.summary {
-  margin-top: var(--space-3);
-  color: var(--color-text-secondary);
-  line-height: var(--leading-relaxed);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 40px;
 }
 
 .meta {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
-  margin-top: var(--space-4);
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
 }
 
-.meta > span:first-child {
-  color: var(--color-accent);
+.kind {
+  text-transform: capitalize;
+}
+
+.meta a {
+  transition: color var(--transition-normal);
 }
 
 .meta a:hover {
+  color: var(--color-text-primary);
+}
+
+.title {
+  font-family: var(--font-headline);
+  font-size: clamp(34px, 3.6vw, 56px);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-overlay-light);
+  font-size: 11px;
+  font-weight: var(--font-semibold);
+  letter-spacing: 0.02em;
   color: var(--color-text-primary);
 }
 
@@ -91,27 +117,24 @@
   font-size: var(--text-lg);
 }
 
-.prose h2::before {
-  content: '## ';
-  font-family: var(--font-mono);
-  color: var(--color-text-muted);
-}
-
 .prose h3 {
   margin-top: 1.8em;
   font-size: var(--text-md);
 }
 
-.prose h3::before {
-  content: '### ';
-  font-family: var(--font-mono);
-  color: var(--color-text-muted);
+.prose h4 {
+  margin-top: 1.6em;
+  font-size: var(--text-base);
 }
 
 .prose h2 + *,
 .prose h3 + *,
 .prose h4 + * {
   margin-top: 0.6em;
+}
+
+.prose > :first-child {
+  margin-top: 0;
 }
 
 .prose a {
@@ -127,17 +150,19 @@
 
 .citation {
   margin-left: 0.1em;
-  font-size: 0.72em;
+  font-size: 0.7em;
+  font-weight: 500;
   line-height: 0;
 }
 
 .prose .citation a {
-  color: var(--color-accent);
+  color: var(--color-text-secondary);
   text-decoration: none;
+  transition: color var(--transition-normal);
 }
 
 .prose .citation a:hover {
-  background: var(--color-accent-muted);
+  color: var(--color-text-primary);
 }
 
 .prose strong {
@@ -146,11 +171,11 @@
 
 .prose ul,
 .prose ol {
-  padding-left: 1.6em;
+  padding-left: 1.4em;
 }
 
 .prose ul {
-  list-style: '- ';
+  list-style: disc;
 }
 
 .prose ol {
@@ -167,19 +192,20 @@
 
 .prose blockquote {
   padding-left: 1em;
-  border-left: 2px solid var(--color-accent);
+  border-left: 2px solid var(--color-border-light);
   color: var(--color-text-secondary);
 }
 
 .prose code {
   padding: 0.1em 0.35em;
   background: var(--color-overlay-light);
-  font-size: 0.9em;
+  font-family: var(--font-mono);
+  font-size: 0.875em;
 }
 
 .prose pre {
   overflow-x: auto;
-  padding: var(--space-4);
+  padding: 16px 18px;
   border: 1px solid var(--color-border-light);
   background: var(--color-surface);
   font-size: var(--text-sm);
@@ -189,12 +215,13 @@
 .prose pre code {
   padding: 0;
   background: none;
+  font-size: inherit;
 }
 
 .prose hr {
   margin: 2.4em 0;
   border: 0;
-  border-top: 1px dashed var(--color-border-light);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .prose img {
@@ -206,7 +233,7 @@
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
 }
 
 .prose th,
@@ -230,6 +257,10 @@
 
 @media (max-width: 900px) {
   .article {
-    padding: var(--space-4);
+    padding: 32px 20px 64px;
+  }
+
+  .title {
+    font-size: clamp(32px, 8vw, 46px);
   }
 }
