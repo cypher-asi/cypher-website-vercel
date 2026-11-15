@@ -190,11 +190,11 @@
 }
 
 .source:target {
-  border-left-color: var(--color-accent);
+  border-left-color: var(--color-text-muted);
 }
 
 .sourceNumber {
-  color: var(--color-accent);
+  color: var(--color-text-muted);
   text-align: right;
 }
 
