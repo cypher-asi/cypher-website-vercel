@@ -1,0 +1,536 @@
+/* ============================================================================
+   Design Tokens (theme-agnostic)
+   ============================================================================ */
+:root {
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-1-5: 6px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Icon sizes */
+  --icon-xs: 14px;
+  --icon-sm: 16px;
+  --icon-md: 18px;
+  --icon-lg: 20px;
+  --icon-xl: 24px;
+
+  /* Button/control heights */
+  --control-height-xs: 28px;
+  --control-height-sm: 32px;
+  --control-height-md: 36px;
+  --control-height-lg: 44px;
+
+  /* Control widths */
+  --control-width-default: 200px;
+
+  /* Border radius */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-full: 0;
+
+  /* Typography
+     Loader variables (--font-inter / --font-jetbrains) are attached to <html>
+     in layout.tsx (see src/lib/fonts.ts). */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-jetbrains), 'Fira Code', monospace;
+  /* Headings / display face. Defaults to the body sans. */
+  --font-display: var(--font-sans);
+
+  --text-2xs: 10px;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-base: 14px;
+  --text-lg: 16px;
+  --text-xl: 18px;
+
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+
+  /* Transitions */
+  --transition-fast: 75ms ease-out;
+  --transition-normal: 150ms ease-out;
+  --transition-slow: 300ms ease-out;
+}
+
+/* ============================================================================
+   Dark Theme (Default)
+   ============================================================================ */
+:root,
+[data-theme='dark'] {
+  /* Tells the browser to paint UA-controlled surfaces (the backdrop shown in
+     newly-exposed areas while resizing, overscroll regions, form controls)
+     dark, preventing a white flash along the edges during window resize. */
+  color-scheme: dark;
+
+  --color-bg: #09090b;
+  --color-surface: #0e0e10;
+  --color-elevated: #131316;
+  --color-border: #17171a;
+  --color-border-light: #1f1f23;
+
+  --color-text-primary: #e6e8eb;
+  --color-text-secondary: #969696;
+  --color-text-muted: #6b7280;
+
+  --color-success: #01f4cb;
+  --color-warning: #f59e0b;
+  --color-error: #f4012a;
+  --color-danger: #f4012a;
+  --color-danger-bg: rgba(244, 1, 42, 0.1);
+  --color-danger-hover: #d9012a;
+  --color-pending: #cb01f4;
+  --color-provisioning: #01a4f4;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+
+  --color-focus-ring: #ffffff;
+
+  --color-scrollbar-thumb: var(--color-border);
+  --color-scrollbar-thumb-hover: var(--color-border-light);
+
+  --color-selection: rgba(255, 255, 255, 0.2);
+
+  --color-overlay-subtle: rgba(255, 255, 255, 0.04);
+  --color-overlay-light: rgba(255, 255, 255, 0.06);
+  --color-overlay-medium: rgba(255, 255, 255, 0.08);
+  --color-overlay-heavy: rgba(255, 255, 255, 0.1);
+  --color-overlay-focus: rgba(255, 255, 255, 0.25);
+
+  --color-inverse: #ffffff;
+  --color-inverse-muted: rgba(255, 255, 255, 0.8);
+
+  --color-backdrop: rgba(0, 0, 0, 0.95);
+  --color-backdrop-light: rgba(0, 0, 0, 0.3);
+  --color-backdrop-medium: rgba(0, 0, 0, 0.4);
+
+  --color-neon-cyan: #01f4cb;
+  --color-neon-green: #01f4cb;
+  --color-neon-purple: #cb01f4;
+
+  /* Warm tan link-hover color + soft glow, shared by nav and footer links. */
+  --color-link-hover: #f2e4c4;
+  --link-hover-glow: 0 0 10px rgba(242, 228, 196, 0.5);
+}
+
+/* ============================================================================
+   Light Theme
+   ============================================================================ */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #ffffff;
+  --color-surface: #f8f9fa;
+  --color-elevated: #ffffff;
+  --color-border: #e5e7eb;
+  --color-border-light: #d1d5db;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #9ca3af;
+
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-danger: #dc2626;
+  --color-danger-bg: rgba(220, 38, 38, 0.1);
+  --color-danger-hover: #b91c1c;
+  --color-pending: #9333ea;
+  --color-provisioning: #2563eb;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+  --color-focus-ring: #111827;
+
+  --color-scrollbar-thumb: var(--color-border);
+  --color-scrollbar-thumb-hover: var(--color-border-light);
+
+  --color-selection: rgba(0, 0, 0, 0.1);
+
+  --color-overlay-subtle: rgba(0, 0, 0, 0.03);
+  --color-overlay-light: rgba(0, 0, 0, 0.05);
+  --color-overlay-medium: rgba(0, 0, 0, 0.07);
+  --color-overlay-heavy: rgba(0, 0, 0, 0.1);
+  --color-overlay-focus: rgba(0, 0, 0, 0.2);
+
+  --color-inverse: #111827;
+  --color-inverse-muted: rgba(0, 0, 0, 0.8);
+
+  --color-backdrop: rgba(0, 0, 0, 0.75);
+  --color-backdrop-light: rgba(0, 0, 0, 0.15);
+  --color-backdrop-medium: rgba(0, 0, 0, 0.25);
+
+  --color-neon-cyan: #0d9488;
+  --color-neon-green: #16a34a;
+  --color-neon-purple: #9333ea;
+}
+
+/* ============================================================================
+   Accent Color Palettes
+   ============================================================================ */
+:root,
+[data-accent='cyan'] {
+  --color-accent: #01f4cb;
+  --color-accent-hover: #00d4ad;
+  --color-accent-muted: rgba(1, 244, 203, 0.15);
+  --color-accent-contrast: #0a0a0a;
+}
+
+[data-theme='light'][data-accent='cyan'],
+[data-theme='light'] [data-accent='cyan'] {
+  --color-accent: #0d9488;
+  --color-accent-hover: #0f766e;
+  --color-accent-muted: rgba(13, 148, 136, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+[data-accent='blue'] {
+  --color-accent: #3b82f6;
+  --color-accent-hover: #2563eb;
+  --color-accent-muted: rgba(59, 130, 246, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+[data-accent='purple'] {
+  --color-accent: #a855f7;
+  --color-accent-hover: #9333ea;
+  --color-accent-muted: rgba(168, 85, 247, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+[data-accent='green'] {
+  --color-accent: #22c55e;
+  --color-accent-hover: #16a34a;
+  --color-accent-muted: rgba(34, 197, 94, 0.15);
+  --color-accent-contrast: #0a0a0a;
+}
+
+[data-theme='light'][data-accent='green'],
+[data-theme='light'] [data-accent='green'] {
+  --color-accent: #16a34a;
+  --color-accent-hover: #15803d;
+  --color-accent-muted: rgba(22, 163, 74, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+[data-accent='orange'] {
+  --color-accent: #f97316;
+  --color-accent-hover: #ea580c;
+  --color-accent-muted: rgba(249, 115, 22, 0.15);
+  --color-accent-contrast: #0a0a0a;
+}
+
+[data-theme='light'][data-accent='orange'],
+[data-theme='light'] [data-accent='orange'] {
+  --color-accent: #ea580c;
+  --color-accent-hover: #c2410c;
+  --color-accent-muted: rgba(234, 88, 12, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+[data-accent='rose'] {
+  --color-accent: #f43f5e;
+  --color-accent-hover: #e11d48;
+  --color-accent-muted: rgba(244, 63, 94, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
+/* ============================================================================
+   Site-specific theme tokens
+   ============================================================================ */
+:root,
+[data-theme='dark'] {
+  --site-bg-from: #0c0c0c;
+  --site-bg-to: #000000;
+  --site-border-action: rgba(255, 255, 255, 0.16);
+  --site-border-action-hover: rgba(255, 255, 255, 0.36);
+  --site-border-quote: rgba(255, 255, 255, 0.12);
+  --site-illustration-stroke: rgba(255, 255, 255, 0.32);
+  --site-illustration-fill: rgba(255, 255, 255, 0.45);
+  --site-fade-to: #000000;
+}
+
+[data-theme='light'] {
+  --site-bg-from: #d8d8dd;
+  --site-bg-to: #e0e0e5;
+  --site-border-action: rgba(0, 0, 0, 0.16);
+  --site-border-action-hover: rgba(0, 0, 0, 0.36);
+  --site-border-quote: rgba(0, 0, 0, 0.12);
+  --site-illustration-stroke: rgba(0, 0, 0, 0.5);
+  --site-illustration-fill: rgba(0, 0, 0, 0.6);
+  --site-fade-to: #e0e0e5;
+}
+
+/* ============================================================================
+   Homepage frame
+   The outer nav + page background follow the active theme (dark by default).
+   Only the framed center panel contrasts the outer theme: in dark mode the
+   frame interior is gray with a white cube; in light mode it is the opposite
+   (dark interior with a dark cube).
+   ============================================================================ */
+.home-invert[data-theme='dark'] {
+  /* dark outer frame, gray interior, white cube */
+  --frame-bg: #c9c9ce;
+  --frame-border: rgba(255, 255, 255, 0.14);
+  --frame-corner: rgba(255, 255, 255, 0.5);
+  --frame-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  --mega-bg: linear-gradient(180deg, rgba(10, 10, 12, 0.92) 0%, rgba(10, 10, 12, 0.86) 100%);
+  /* headline sits on the light frame interior -> use dark text */
+  --frame-text: #141416;
+  --frame-text-muted: rgba(20, 20, 22, 0.55);
+}
+
+.home-invert[data-theme='light'] {
+  /* light outer frame, dark interior, dark cube */
+  --frame-bg: #141416;
+  --frame-border: rgba(0, 0, 0, 0.16);
+  --frame-corner: rgba(0, 0, 0, 0.5);
+  --frame-shadow: 0 30px 80px rgba(0, 0, 0, 0.18);
+  --mega-bg: linear-gradient(180deg, rgba(246, 246, 248, 0.94) 0%, rgba(240, 240, 243, 0.9) 100%);
+  /* headline sits on the dark frame interior -> use light text */
+  --frame-text: #f0f0f2;
+  --frame-text-muted: rgba(240, 240, 242, 0.6);
+}
+
+/* ============================================================================
+   Reset
+   ============================================================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display), system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================================================
+   Base styles
+   ============================================================================ */
+html {
+  scroll-padding-top: 5rem;
+  background: var(--color-bg);
+}
+
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: radial-gradient(ellipse at center, var(--site-bg-from) 0%, var(--site-bg-to) 60%) !important;
+}
+
+body {
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  color: var(--color-text-primary);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  min-height: 100dvh;
+  /* `clip` (not `hidden`) prevents horizontal overflow without turning <body>
+     into a scroll container, which would break `position: sticky` descendants
+     such as the whitepaper table of contents. */
+  overflow-x: clip;
+}
+
+/* Hide the native window scrollbar (root scroller) — replaced by the
+   floating CustomScrollbar overlay. Both html and body are suppressed
+   so the `* { scrollbar-width: thin }` rule below can't re-enable it. */
+html,
+body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-scrollbar-thumb) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 0;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-selection);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+code {
+  font-family: var(--font-mono), 'Fira Code', monospace;
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-feature-settings:
+    'liga' on,
+    'calt' on;
+}
+
+/* Page content blur while the desktop mega-panel is open.
+   The transition lives on the base element so the blur fades both in (class
+   added) and out (class removed). */
+#page-main {
+  transition: filter 300ms ease;
+}
+
+.page-blurred {
+  filter: blur(6px);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ============================================================================
+   Sci-fi CTA button (shared by the Wilder World hero + nav Early Access)
+   Short, near-square corners (1px radius) with a 45deg cut on the bottom-left.
+   ============================================================================ */
+.sci-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 1px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 11px), calc(100% - 11px) 100%, 0 100%);
+  transition:
+    background var(--transition-normal),
+    color var(--transition-normal),
+    opacity var(--transition-normal);
+}
+
+.sci-btn-primary {
+  position: relative;
+  /* Own stacking context so the fill overlay (z-index: -1) sits above the base
+     colour but below the label, without escaping behind the page. */
+  isolation: isolate;
+  color: #000;
+  background-color: #ff6434;
+  transition:
+    color var(--transition-normal),
+    opacity var(--transition-normal);
+}
+
+/* Brighter overlay that wipes in from the left on hover. It runs slightly wider
+   than the button and its right edge is slanted, so the leading edge of the
+   fill comes across at an angle rather than as a flat vertical line. */
+.sci-btn-primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: calc(100% + 16px);
+  background-color: #ff7d55;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  transform: translateX(-101%);
+  transition: transform var(--transition-normal);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.sci-btn-primary:hover::after {
+  transform: translateX(0);
+}
+
+/* Borderless ghost variant (e.g. Watch Trailer over the hero video). */
+.sci-btn-ghost {
+  background: transparent;
+  color: #fff;
+  clip-path: none;
+  padding-left: 0.5rem;
+}
+
+.sci-btn-ghost:hover {
+  color: #ff6434;
+}
