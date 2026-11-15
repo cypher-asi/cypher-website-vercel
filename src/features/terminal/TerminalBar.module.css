@@ -11,15 +11,14 @@
   padding: 0 var(--page-gutter);
 }
 
-/* Solid page background at the top, fading out so content scrolling under
-   the bar dissolves into it. */
+/* The page background, so content scrolling under the bar is hidden. */
 .bar::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: linear-gradient(180deg, var(--site-fade-to) 0%, var(--site-fade-to) 45%, transparent 100%);
+  background: var(--site-bg);
 }
 
 .brandLink {
