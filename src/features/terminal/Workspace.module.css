@@ -39,26 +39,46 @@
   border-color: var(--site-border-action);
 }
 
+/* A strip of filled cells; the 1px gaps let the border color show through as
+   separators. */
 .panelHeader {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  align-items: stretch;
+  gap: 1px;
   flex-shrink: 0;
-  height: 34px;
-  padding: 0 var(--space-3);
-  font-size: var(--text-xs);
+  height: 26px;
+  background: var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+  font-family: var(--font-mono), 'Fira Code', monospace;
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .panelTitle {
-  font-size: var(--text-2xs);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+  font-family: inherit;
+  font-size: inherit;
   font-weight: var(--font-semibold);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+}
+
+.panelFill {
+  flex: 1;
+  min-width: 0;
+  background: var(--color-elevated);
 }
 
 .panelMeta {
-  margin-left: auto;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-3);
+  background: var(--color-elevated);
   color: var(--color-text-muted);
 }
 
