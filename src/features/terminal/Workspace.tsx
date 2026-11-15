@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { SITE, companyLabelForSite, type Company } from '@/lib/site';
 import { CompanyList } from './CompanyList';
+import { Frame } from './Frame';
 import { Panel } from './Panel';
 import { Reader } from './Reader';
 import { SourcesList } from './SourcesPanel';
@@ -27,7 +28,7 @@ export async function Workspace({
   const query = company ? `company=${company.id}` : '';
 
   return (
-    <div className={styles.workspace}>
+    <Frame className={styles.workspace}>
       <div className={styles.left}>
         <Panel
           title="Research"
@@ -80,6 +81,6 @@ export async function Workspace({
           <p className={styles.empty}>Open a post to see its sources.</p>
         )}
       </Panel>
-    </div>
+    </Frame>
   );
 }

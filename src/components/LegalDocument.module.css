@@ -1,123 +1,55 @@
-.page {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 10rem 2rem 6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 3.5rem;
+.frame {
+  grid-template-columns: minmax(260px, 24%) minmax(0, 1fr);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
-  overflow-wrap: anywhere;
 }
 
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
+.toc {
+  padding: var(--space-1) 0;
 }
 
-.eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+.tocLink {
+  display: block;
+  padding: var(--space-1-5) var(--space-3);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
   color: var(--color-text-secondary);
-  font-family: var(--font-mono), 'Fira Code', monospace;
+  transition: color var(--transition-fast);
 }
 
-.heading {
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
+.tocLink:hover {
   color: var(--color-text-primary);
-}
-
-.subtitle {
-  max-width: 620px;
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
-}
-
-.document {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.effectiveDate {
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-  color: var(--color-text-muted);
-  font-family: var(--font-mono), 'Fira Code', monospace;
-}
-
-.intro {
-  font-size: 1rem;
-  line-height: 1.75;
-  color: var(--color-text-secondary);
 }
 
 .section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  scroll-margin-top: var(--space-6);
 }
 
-.sectionHeading {
-  font-size: 1.125rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary);
+.frame .section {
+  margin-top: 2.2em;
 }
 
-.paragraph {
-  font-size: 0.9375rem;
-  line-height: 1.75;
-  color: var(--color-text-secondary);
+.frame .section:first-child {
+  margin-top: 0;
 }
 
-.contactEmail {
-  align-self: flex-start;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  border-bottom: 1px solid var(--color-border-light);
-  transition: opacity 200ms ease;
+.frame .section > h2 {
+  margin-top: 0;
 }
 
-.contactEmail:hover {
-  opacity: 0.7;
+.frame .section > * + * {
+  margin-top: 1.1em;
 }
 
-.backRow {
-  margin-top: 1rem;
+.frame .section > h2 + * {
+  margin-top: 0.6em;
 }
 
-.backLink {
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  font-family: var(--font-mono), 'Fira Code', monospace;
-  transition: color 200ms ease;
-}
-
-.backLink:hover {
-  color: var(--color-text-primary);
-}
-
-@media (max-width: 640px) {
-  .page {
-    padding: 7rem 1.25rem 4rem;
-    gap: 2.5rem;
+@media (max-width: 760px) {
+  .frame .contents {
+    display: none;
   }
 
-  .subtitle {
-    font-size: 1rem;
-  }
-
-  .document {
-    gap: 2rem;
+  .section {
+    scroll-margin-top: calc(var(--bar-height) + var(--space-4));
   }
 }

@@ -1,4 +1,6 @@
-import { BackHomeLink } from './BackHomeLink';
+import { Frame } from '@/features/terminal/Frame';
+import { Panel } from '@/features/terminal/Panel';
+import article from '@/features/terminal/Article.module.css';
 import styles from './LegalDocument.module.css';
 
 export interface LegalSection {
@@ -18,8 +20,14 @@ interface LegalDocumentProps {
   email: string;
 }
 
+const anchor = (heading: string): string =>
+  heading
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
 export function LegalDocument({
-  eyebrow = 'LEGAL',
+  eyebrow = 'Legal',
   title,
   description,
   effectiveDate,
@@ -29,43 +37,57 @@ export function LegalDocument({
   contactBody,
   email,
 }: LegalDocumentProps) {
+  const headings = [...sections.map((section) => section.heading), contactHeading];
   return (
-    <div className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>{eyebrow}</p>
-        <h1 className={styles.heading}>{title}</h1>
-        <p className={styles.subtitle}>{description}</p>
-      </header>
+    <Frame className={styles.frame}>
+      <Panel title="Contents" className={styles.contents}>
+        <ol className={styles.toc}>
+          {headings.map((heading) => (
+            <li key={heading}>
+              <a className={styles.tocLink} href={`#${anchor(heading)}`}>
+                {heading}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </Panel>
 
-      <div className={styles.document}>
-        {effectiveDate ? (
-          <p className={styles.effectiveDate}>{effectiveDate}</p>
-        ) : null}
-        {intro ? <p className={styles.intro}>{intro}</p> : null}
+      <Panel title="Read">
+        <article className={article.article}>
+          <header className={article.header}>
+            <p className={article.meta}>
+              <span>{eyebrow}</span>
+              {effectiveDate && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>{effectiveDate}</span>
+                </>
+              )}
+            </p>
+            <h1 className={article.title}>{title}</h1>
+            <p className={article.lead}>{description}</p>
+          </header>
 
-        {sections.map((section) => (
-          <section key={section.heading} className={styles.section}>
-            <h2 className={styles.sectionHeading}>{section.heading}</h2>
-            {section.body.map((paragraph, index) => (
-              <p key={index} className={styles.paragraph}>
-                {paragraph}
-              </p>
+          <div className={article.prose}>
+            {intro && <p>{intro}</p>}
+            {sections.map((section) => (
+              <section key={section.heading} id={anchor(section.heading)} className={styles.section}>
+                <h2>{section.heading}</h2>
+                {section.body.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </section>
             ))}
-          </section>
-        ))}
-
-        <section className={styles.section}>
-          <h2 className={styles.sectionHeading}>{contactHeading}</h2>
-          <p className={styles.paragraph}>{contactBody}</p>
-          <a className={styles.contactEmail} href={`mailto:${email}`}>
-            {email}
-          </a>
-        </section>
-      </div>
-
-      <p className={styles.backRow}>
-        <BackHomeLink className={styles.backLink}>Back to home</BackHomeLink>
-      </p>
-    </div>
+            <section id={anchor(contactHeading)} className={styles.section}>
+              <h2>{contactHeading}</h2>
+              <p>{contactBody}</p>
+              <p>
+                <a href={`mailto:${email}`}>{email}</a>
+              </p>
+            </section>
+          </div>
+        </article>
+      </Panel>
+    </Frame>
   );
 }

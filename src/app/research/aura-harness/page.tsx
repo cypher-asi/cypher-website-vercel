@@ -17,7 +17,7 @@ const sections = buildToc(
 export default function AuraHarnessPaper() {
   return (
     <WhitepaperLayout
-      eyebrow="Research / Whitepaper"
+      slug="aura-harness"
       title={
         <>
           AURA Harness: A Deterministic

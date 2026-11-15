@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { Frame } from '@/features/terminal/Frame';
+import { Panel } from '@/features/terminal/Panel';
+import panel from '@/features/terminal/Workspace.module.css';
 import { papers } from './_components/papers';
+import { SourcesSearch } from './_components/SourcesSearch';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -12,41 +16,38 @@ export const metadata: Metadata = {
 
 export default function ResearchIndex() {
   return (
-    <div className={styles.page}>
-      <header className={styles.hero}>
-        <p className={styles.eyebrow}>Research</p>
-        <h1 className={styles.heading}>
-          Papers on intelligence,
-          <br />
-          <span className={styles.accent}>systems, and protocols.</span>
-        </h1>
-        <p className={styles.subtitle}>
-          Our open research and whitepapers on autonomous systems, distributed
-          compute, and the protocols that connect them.
-        </p>
-      </header>
+    <Frame className={styles.frame}>
+      <Panel title="Papers" meta={papers.length}>
+        <div className={styles.list}>
+          {papers.map((paper) => (
+            <Link key={paper.slug} href={`/research/${paper.slug}`} className={styles.card}>
+              <div className={styles.cardMeta}>
+                <span>{paper.year}</span>
+                {!paper.available && <span className={styles.cardBadge}>coming soon</span>}
+                <ArrowUpRight size={16} className={styles.cardIcon} />
+              </div>
+              <h3 className={styles.cardTitle}>{paper.title}</h3>
+              <p className={styles.cardBlurb}>{paper.blurb}</p>
+            </Link>
+          ))}
+        </div>
+      </Panel>
 
-      <Link href="/research/sources" className={styles.sourcesLink}>
-        <span className={styles.sourcesPrompt}>$</span> grep ~/research/sources
-        <span className={styles.sourcesHint}>every source cited across the writing, searchable</span>
-        <ArrowUpRight size={16} className={styles.cardIcon} />
-      </Link>
-
-      <section className={styles.list} aria-label="Whitepapers">
-        {papers.map((paper) => (
-          <Link key={paper.slug} href={`/research/${paper.slug}`} className={styles.card}>
-            <div className={styles.cardMeta}>
-              <span className={styles.cardYear}>{paper.year}</span>
-              {!paper.available && <span className={styles.cardBadge}>Coming soon</span>}
-            </div>
-            <h2 className={styles.cardTitle}>
-              {paper.title}
-              <ArrowUpRight size={18} className={styles.cardIcon} />
-            </h2>
-            <p className={styles.cardBlurb}>{paper.blurb}</p>
+      <Panel
+        title="Sources"
+        meta={
+          <Link className={panel.panelLink} href="/research/sources">
+            index ↗
           </Link>
-        ))}
-      </section>
-    </div>
+        }
+      >
+        <div className={styles.sources}>
+          <p className={styles.sourcesText}>
+            Every source cited across the writing of Cypher and its companies, searchable in one index.
+          </p>
+          <SourcesSearch />
+        </div>
+      </Panel>
+    </Frame>
   );
 }

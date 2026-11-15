@@ -2,7 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MAX_SEARCH_LENGTH, searchSources, type ResearchSource } from '@/features/research';
 import { writingHref } from '@/features/terminal/data';
+import { Frame } from '@/features/terminal/Frame';
+import { Panel } from '@/features/terminal/Panel';
 import { companyLabelForSite } from '@/lib/site';
+import { SourcesSearch } from '../_components/SourcesSearch';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
@@ -25,41 +28,32 @@ export default async function SourcesIndex({ searchParams }: { searchParams: Sea
     sources = null;
   }
 
-  return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <p className={styles.command}>
-          <span className={styles.prompt}>$</span> grep -ri {q ? `"${q}"` : '.'} ~/research/sources
-        </p>
-        <h1 className={styles.heading}>Sources</h1>
-        <p className={styles.subtitle}>
-          Every source cited across the writing, indexed once per page and linked to the posts that cite it.
-        </p>
-        <form className={styles.search} action="/research/sources" role="search">
-          <label className={styles.searchLabel} htmlFor="sources-q">
-            search&gt;
-          </label>
-          <input
-            id="sources-q"
-            className={styles.searchInput}
-            name="q"
-            defaultValue={q}
-            maxLength={MAX_SEARCH_LENGTH}
-            placeholder='coreweave, "open models", sec.gov'
-            autoComplete="off"
-          />
-        </form>
-      </header>
+  const count = sources?.length
+    ? `${sources.length === LIMIT ? `first ${LIMIT}` : sources.length} ${sources.length === 1 ? 'source' : 'sources'}`
+    : undefined;
 
-      {sources === null ? (
-        <p className={styles.empty}>The index is unavailable right now. Please try again.</p>
-      ) : sources.length === 0 ? (
-        <p className={styles.empty}>{q ? `No sources match "${q}".` : 'No sources indexed yet.'}</p>
-      ) : (
-        <>
-          <p className={styles.count}>
-            {sources.length === LIMIT ? `first ${LIMIT}` : sources.length} {sources.length === 1 ? 'source' : 'sources'}
+  return (
+    <Frame className={styles.frame}>
+      <Panel title="Search">
+        <div className={styles.search}>
+          <p className={styles.text}>
+            Every source cited across the writing, indexed once per page and linked to the posts that cite it.
           </p>
+          <SourcesSearch query={q} />
+          {q && (
+            <Link className={styles.clear} href="/research/sources">
+              Clear search
+            </Link>
+          )}
+        </div>
+      </Panel>
+
+      <Panel title="Sources" meta={count}>
+        {sources === null ? (
+          <p className={styles.empty}>The index is unavailable right now. Please try again.</p>
+        ) : sources.length === 0 ? (
+          <p className={styles.empty}>{q ? `No sources match "${q}".` : 'No sources indexed yet.'}</p>
+        ) : (
           <ol className={styles.list}>
             {sources.map((source) => (
               <li key={source.id} className={styles.item}>
@@ -85,8 +79,8 @@ export default async function SourcesIndex({ searchParams }: { searchParams: Sea
               </li>
             ))}
           </ol>
-        </>
-      )}
-    </div>
+        )}
+      </Panel>
+    </Frame>
   );
 }

@@ -26,7 +26,7 @@
   padding: 0;
   background: none;
   border: none;
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
   cursor: pointer;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .chevron {
-  transition: transform 0.18s ease;
+  transition: transform var(--transition-normal);
 }
 
 .chevronOpen {
@@ -51,22 +51,22 @@
   display: block;
   flex: 1 1 auto;
   min-width: 0;
-  padding: 0.32rem 0.4rem 0.32rem 0.45rem;
-  font-size: 0.8125rem;
-  line-height: 1.35;
+  padding: var(--space-1) var(--space-1-5) var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  line-height: var(--leading-tight);
   color: var(--color-text-secondary);
-  text-decoration: none;
-  border-left: 1px solid var(--color-overlay-medium);
-  transition: color 0.18s ease, border-color 0.18s ease;
+  border-left: 1px solid var(--color-border-light);
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .link:hover {
-  color: var(--color-link-hover);
-  border-left-color: var(--color-link-hover);
-  text-shadow: var(--link-hover-glow);
+  color: var(--color-text-primary);
 }
 
-.linkActive {
-  color: var(--color-link-hover);
-  border-left-color: var(--color-link-hover);
+.linkActive,
+.linkActive:hover {
+  color: var(--color-accent);
+  border-left-color: var(--color-accent);
 }

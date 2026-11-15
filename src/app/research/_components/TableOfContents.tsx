@@ -73,9 +73,11 @@ interface TableOfContentsProps {
   items: TocNode[];
   activeId: string | null;
   onSelect: (id: string) => void;
+  /** The element the list scrolls within, kept on the active item. */
+  scrollContainerId?: string;
 }
 
-export function TableOfContents({ items, activeId, onSelect }: TableOfContentsProps) {
+export function TableOfContents({ items, activeId, onSelect, scrollContainerId }: TableOfContentsProps) {
   // Start with every parent expanded so subitems are visible by default.
   const [expanded, setExpanded] = useState<Set<string>>(() => new Set(collectParentIds(items)));
   const rootRef = useRef<HTMLUListElement | null>(null);
@@ -96,9 +98,9 @@ export function TableOfContents({ items, activeId, onSelect }: TableOfContentsPr
   // Scroll the active item into view within the TOC's own scroll container
   // (never the page).
   useEffect(() => {
-    if (!activeId || !rootRef.current) return;
+    if (!activeId || !rootRef.current || !scrollContainerId) return;
     const el = rootRef.current.querySelector<HTMLElement>(`[data-tocid="${CSS.escape(activeId)}"]`);
-    const container = rootRef.current.closest<HTMLElement>('[data-toc-scroll]');
+    const container = document.getElementById(scrollContainerId);
     if (!el || !container) return;
     const er = el.getBoundingClientRect();
     const cr = container.getBoundingClientRect();
@@ -107,7 +109,7 @@ export function TableOfContents({ items, activeId, onSelect }: TableOfContentsPr
     } else if (er.bottom > cr.bottom) {
       container.scrollTop += er.bottom - cr.bottom + 16;
     }
-  }, [activeId]);
+  }, [activeId, scrollContainerId]);
 
   const toggle = useCallback((id: string) => {
     setExpanded((prev) => {

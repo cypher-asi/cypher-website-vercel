@@ -27,9 +27,6 @@ export function CompanyList({
       <ul className={styles.rows}>
         <li>
           <Link className={styles.company} href="/" aria-current={activeId === null ? 'page' : undefined} scroll={false}>
-            <span className={styles.rowMarker} aria-hidden>
-              {activeId === null ? '>' : ' '}
-            </span>
             <span className={styles.companyName}>all</span>
           </Link>
         </li>
@@ -37,14 +34,7 @@ export function CompanyList({
           const count = company.siteId ? (counts[company.siteId] ?? 0) : 0;
           const active = company.id === activeId;
           const open = () => setOverlay(productById(company.id));
-          const body = (
-            <>
-              <span className={styles.rowMarker} aria-hidden>
-                {active ? '>' : ' '}
-              </span>
-              <span className={styles.companyName}>{company.label}</span>
-            </>
-          );
+          const body = <span className={styles.companyName}>{company.label}</span>;
           return (
             <li key={company.id}>
               {count > 0 ? (

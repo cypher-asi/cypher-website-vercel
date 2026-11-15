@@ -17,7 +17,7 @@ const sections = buildToc(
 export default function TheGridPaper() {
   return (
     <WhitepaperLayout
-      eyebrow="Research / Whitepaper"
+      slug="the-grid"
       title={
         <>
           THE GRID:

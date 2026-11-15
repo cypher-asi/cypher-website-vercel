@@ -17,7 +17,7 @@ const sections = buildToc(
 export default function ZeroOsPaper() {
   return (
     <WhitepaperLayout
-      eyebrow="Research / Whitepaper"
+      slug="zero-os"
       title={
         <>
           zer0: A Social

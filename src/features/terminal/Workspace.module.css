@@ -1,19 +1,23 @@
 /* ============================================================================
-   Workspace: panels filling the viewport between the bar and the status line
+   Frame: panels filling the viewport between the bar and the status line
    ============================================================================ */
 
-/* Pinned between the bar and the status line, so only the panels scroll. */
-.workspace {
+/* Pinned between the bar and the status line, so only the panels scroll. Each
+   page sets its own grid-template-columns. */
+.frame {
   position: fixed;
   top: var(--bar-height);
   bottom: var(--status-height);
   left: 0;
   right: 0;
   display: grid;
-  grid-template-columns: minmax(280px, 24%) minmax(0, 1fr) minmax(260px, 24%);
   gap: var(--space-3);
   padding: var(--space-4) var(--page-gutter) var(--space-3);
   font-variant-numeric: tabular-nums;
+}
+
+.workspace {
+  grid-template-columns: minmax(280px, 24%) minmax(0, 1fr) minmax(260px, 24%);
 }
 
 .left {
@@ -116,17 +120,17 @@
   display: grid;
   align-items: baseline;
   column-gap: var(--space-2);
-  padding: var(--space-1-5) var(--space-3) var(--space-1-5) var(--space-2);
+  padding: var(--space-1-5) var(--space-3);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
   transition: color var(--transition-fast);
 }
 
 .row {
-  grid-template-columns: 1ch auto minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, 1fr);
   grid-template-areas:
-    'marker date company'
-    '. title title';
+    'date company'
+    'title title';
 }
 
 .row:hover,
@@ -139,15 +143,6 @@
 .row[aria-current='page'] .rowTitle,
 .company[aria-current='page'] .companyName {
   color: var(--color-accent);
-}
-
-.rowMarker {
-  color: var(--color-accent);
-  white-space: pre;
-}
-
-.row > .rowMarker {
-  grid-area: marker;
 }
 
 .rowDate {
@@ -169,7 +164,7 @@
 }
 
 .company {
-  grid-template-columns: 1ch minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 button.company {
@@ -279,7 +274,7 @@ button.company {
 }
 
 @media (max-width: 760px) {
-  .workspace {
+  .frame {
     position: static;
     display: flex;
     flex-direction: column;

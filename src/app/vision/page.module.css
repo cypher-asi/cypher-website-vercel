@@ -1,126 +1,56 @@
-.page {
-  max-width: 1035px;
-  margin: 0 auto;
-  padding: 10rem 2rem 6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 5rem;
+.frame {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 32%);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* ============================================================================
-   Hero
-   ============================================================================ */
-
-.hero {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.eyebrow {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  color: var(--color-text-secondary);
-}
-
-.heading {
-  font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 300;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--color-text-primary);
-}
-
-.accent {
-  color: var(--color-text-secondary);
-}
-
-.subtitle {
-  max-width: 620px;
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
-}
-
-/* ============================================================================
-   Card grid
-   ============================================================================ */
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1px;
-  background: var(--color-overlay-medium);
-  border: 1px solid var(--color-overlay-medium);
-}
-
-.card {
-  padding: 2rem 2.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  background: var(--color-bg);
-}
-
-.cardNumber {
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  color: var(--color-text-secondary);
-  font-family: var(--font-mono), 'Fira Code', monospace;
-}
-
-.cardTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  color: var(--color-text-primary);
-}
-
-.cardBody {
-  font-size: 0.875rem;
-  line-height: 1.65;
-  color: var(--color-text-secondary);
-}
-
-/* ============================================================================
-   Closing statement
-   ============================================================================ */
-
-.statement {
-  padding: 2rem 0;
-}
-
 .quote {
-  font-size: 1.125rem;
-  line-height: 1.7;
+  padding-left: 1em;
+  border-left: 2px solid var(--color-border-light);
+  font-size: 16px;
+  line-height: 1.75;
   color: var(--color-text-secondary);
-  border-left: 2px solid var(--site-border-quote);
-  padding-left: 1.5rem;
-  font-style: italic;
-  max-width: 680px;
 }
 
 .quoteAttribution {
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
-  font-style: normal;
-  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
 }
 
-/* ============================================================================
-   Responsive
-   ============================================================================ */
+.principles {
+  padding: var(--space-1) 0;
+}
 
-@media (max-width: 640px) {
-  .page {
-    padding: 7rem 1.25rem 4rem;
-    gap: 3rem;
-  }
+.principle {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: var(--space-3);
+  padding: var(--space-3);
+  border-top: 1px solid var(--color-border-light);
+}
 
-  .grid {
-    grid-template-columns: 1fr;
-  }
+.principle:first-child {
+  padding-top: var(--space-1-5);
+  border-top: none;
+}
+
+.number {
+  font-size: var(--text-xs);
+  line-height: 20px;
+  color: var(--color-text-muted);
+}
+
+.name {
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  line-height: 20px;
+  color: var(--color-text-primary);
+}
+
+.body {
+  margin-top: var(--space-1);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
 }

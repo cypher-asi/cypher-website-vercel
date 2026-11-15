@@ -53,9 +53,6 @@ export function WritingList({ rows, activeId, query }: { rows: WritingRow[]; act
               aria-current={active ? 'page' : undefined}
               scroll={false}
             >
-              <span className={styles.rowMarker} aria-hidden>
-                {active ? '>' : ' '}
-              </span>
               <span className={styles.rowDate}>{row.publishedAt.slice(0, 10)}</span>
               <span className={styles.rowCompany}>{row.company}</span>
               <span className={styles.rowTitle}>{row.title}</span>

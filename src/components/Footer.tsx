@@ -6,7 +6,6 @@ import styles from './Footer.module.css';
 export function Footer({ status }: { status: SiteConfig['status'] }) {
   return (
     <footer className={styles.status} aria-label="Site footer">
-      <span className={styles.mode}>NORMAL</span>
       <nav className={styles.links} aria-label="Footer">
         {status.links.map((link) => (
           <Link key={link.href} className={styles.link} href={link.href}>

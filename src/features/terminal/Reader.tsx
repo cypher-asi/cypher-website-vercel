@@ -6,6 +6,7 @@ import { CitedProse } from './CitedProse';
 import { sourceAnchor } from './SourcesPanel';
 import { rehypeCitedStatements } from './statements';
 import type { WritingPost } from './data';
+import article from './Article.module.css';
 import styles from './Reader.module.css';
 
 const isExternal = (href: string | undefined): boolean => Boolean(href && /^https?:\/\//i.test(href));
@@ -85,9 +86,9 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
   const cited = new Set(post.sources.map((source) => source.number));
   const host = new URL(post.canonicalUrl).host;
   return (
-    <article className={styles.article}>
-      <header className={styles.header}>
-        <p className={styles.meta}>
+    <article className={article.article}>
+      <header className={article.header}>
+        <p className={article.meta}>
           <time dateTime={post.publishedAt}>{postDate.format(new Date(post.publishedAt))}</time>
           <span aria-hidden="true">·</span>
           <span>{company}</span>
@@ -98,7 +99,7 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
             {host} ↗
           </a>
         </p>
-        <h1 className={styles.title}>{post.title}</h1>
+        <h1 className={article.title}>{post.title}</h1>
         <p className={styles.byline}>
           <span className={styles.avatar} aria-hidden="true">
             {initials(post.authorName)}
@@ -108,7 +109,7 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
           </span>
         </p>
       </header>
-      <CitedProse className={styles.prose}>
+      <CitedProse className={`${article.prose} ${styles.prose}`}>
         <Markdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[[rehypeCitedStatements, { cited, className: styles.statement }]]}
@@ -117,7 +118,6 @@ export function Reader({ post, company }: { post: WritingPost; company: string }
           {body}
         </Markdown>
       </CitedProse>
-      <p className={styles.eof}>-- end of {post.slug}.md --</p>
     </article>
   );
 }

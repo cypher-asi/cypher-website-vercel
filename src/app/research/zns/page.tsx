@@ -17,7 +17,7 @@ const sections = buildToc(
 export default function ZnsPaper() {
   return (
     <WhitepaperLayout
-      eyebrow="Research / Whitepaper"
+      slug="zns"
       title={
         <>
           Zero Name Service:
