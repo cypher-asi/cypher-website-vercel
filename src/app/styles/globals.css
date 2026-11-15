@@ -265,6 +265,21 @@
   --color-accent-contrast: #ffffff;
 }
 
+[data-accent='gold'] {
+  --color-accent: #f2e4c4;
+  --color-accent-hover: #e6d3a8;
+  --color-accent-muted: rgba(242, 228, 196, 0.15);
+  --color-accent-contrast: #0a0a0a;
+}
+
+[data-theme='light'][data-accent='gold'],
+[data-theme='light'] [data-accent='gold'] {
+  --color-accent: #9a7b2f;
+  --color-accent-hover: #7d6324;
+  --color-accent-muted: rgba(154, 123, 47, 0.15);
+  --color-accent-contrast: #ffffff;
+}
+
 /* ============================================================================
    Site-specific theme tokens
    ============================================================================ */

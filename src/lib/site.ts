@@ -4,7 +4,7 @@
  */
 
 export type Theme = 'dark' | 'light' | 'system';
-export type AccentColor = 'cyan' | 'blue' | 'purple' | 'green' | 'orange' | 'rose';
+export type AccentColor = 'cyan' | 'blue' | 'purple' | 'green' | 'orange' | 'rose' | 'gold';
 
 export interface SiteLink {
   label: string;
@@ -46,7 +46,7 @@ export const GITHUB_ORG = 'https://github.com/cypher-asi';
 
 export const SITE: SiteConfig = {
   wordmark: 'CYPHER',
-  accent: 'cyan',
+  accent: 'gold',
   defaultTheme: 'dark',
   themeStorageKey: 'zui-theme-cypher',
   metadata: {

@@ -24,7 +24,7 @@ interface ThemeContextValue {
 
 const DEFAULT_STORAGE_KEY = 'zui-theme';
 const VALID_THEMES: Theme[] = ['dark', 'light', 'system'];
-const VALID_ACCENTS: AccentColor[] = ['cyan', 'blue', 'purple', 'green', 'orange', 'rose'];
+const VALID_ACCENTS: AccentColor[] = ['cyan', 'blue', 'purple', 'green', 'orange', 'rose', 'gold'];
 
 function getStoredPrefs(storageKey: string): { theme: Theme; accent: AccentColor } | null {
   if (typeof window === 'undefined') return null;

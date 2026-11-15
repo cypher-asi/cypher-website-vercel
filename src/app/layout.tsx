@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning className={fontVariables}>
+    <html lang="en" suppressHydrationWarning className={fontVariables} data-accent={SITE.accent}>
       <body>
         <Providers>
           <ThemeWrapper

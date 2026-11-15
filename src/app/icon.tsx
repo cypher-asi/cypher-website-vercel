@@ -3,8 +3,8 @@ import { ImageResponse } from 'next/og';
 export const size = { width: 32, height: 32 };
 export const contentType = 'image/png';
 
-/* Cyan accent, matching --color-accent for the default theme. */
-const ACCENT = '#01f4cb';
+/* Gold accent, matching --color-accent for the default theme. */
+const ACCENT = '#f2e4c4';
 
 /** Favicon: the "/C" mark on a black tile. */
 export default function Icon() {

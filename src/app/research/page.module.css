@@ -63,7 +63,7 @@
 }
 
 .sourcesLink:hover .cardIcon {
-  color: var(--color-success);
+  color: var(--color-accent);
   transform: translate(2px, -2px);
 }
 
@@ -140,7 +140,7 @@
 }
 
 .card:hover .cardIcon {
-  color: var(--color-success);
+  color: var(--color-accent);
   transform: translate(2px, -2px);
 }
 
