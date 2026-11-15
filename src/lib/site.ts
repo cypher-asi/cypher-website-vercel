@@ -54,9 +54,9 @@ export const SITE: SiteConfig = {
     description: 'A sovereign AI stack spanning energy, infrastructure, protocols, and end-products.',
   },
   links: [
-    { label: 'Writing', href: '/' },
+    { label: 'Research', href: '/' },
     { label: 'Companies', href: '/companies' },
-    { label: 'Research', href: '/research' },
+    { label: 'Papers', href: '/research' },
     { label: 'Code', href: GITHUB_ORG, external: true },
     { label: 'News', href: 'https://zine.live', external: true },
     { label: 'Vision', href: '/vision' },

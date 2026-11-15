@@ -94,11 +94,11 @@ Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. 
 
 | Route | Description |
 |-------|-------------|
-| `/` | Workspace: Writing and Companies on the left, the latest post in the center, its sources on the right |
-| `/writing/{site}/{kind}/{slug}` | The workspace with one post open. `?company=` filters Writing to one company. |
+| `/` | Workspace: Research and Companies on the left, the latest post in the center, its sources on the right |
+| `/writing/{site}/{kind}/{slug}` | The workspace with one post open. `?company=` filters Research to one company. |
 | `/companies` | The company grid and key facts |
 | `/vision` | Mission statement |
-| `/research` | Research index, with papers at `/research/the-grid`, `/research/aura-harness`, `/research/zns` and `/research/zero-os` |
+| `/research` | Papers index (the "papers" link), with papers at `/research/the-grid`, `/research/aura-harness`, `/research/zns` and `/research/zero-os` |
 | `/research/sources` | Search every source cited by the writing |
 | `/privacy`, `/terms` | Legal documents |
 | `/contact` | Contact details |

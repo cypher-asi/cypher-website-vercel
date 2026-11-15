@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import styles from './Workspace.module.css';
 
-/** A bordered terminal pane with a `[ TITLE ]` header and its own scroll. */
+/** A bordered terminal pane with a titled header and its own scroll. */
 export function Panel({
   title,
   meta,
@@ -18,11 +18,7 @@ export function Panel({
   return (
     <section className={`${styles.panel} ${className ?? ''}`} aria-label={title}>
       <header className={styles.panelHeader}>
-        <h2 className={styles.panelTitle}>
-          <span aria-hidden>[ </span>
-          {title}
-          <span aria-hidden> ]</span>
-        </h2>
+        <h2 className={styles.panelTitle}>{title}</h2>
         {meta && <div className={styles.panelMeta}>{meta}</div>}
       </header>
       <div className={styles.panelBody} id={bodyId}>

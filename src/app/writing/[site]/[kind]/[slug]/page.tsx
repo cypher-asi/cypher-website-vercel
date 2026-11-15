@@ -11,7 +11,7 @@ type SearchParams = Promise<{ company?: string | string[] }>;
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
   const { site, kind, slug } = await params;
   const post = await loadPost(site, kind, slug);
-  if (!post || post === 'unavailable') return { title: 'Writing | Cypher' };
+  if (!post || post === 'unavailable') return { title: 'Research | Cypher' };
   return {
     title: `${post.title} | Cypher`,
     description: post.summary || undefined,

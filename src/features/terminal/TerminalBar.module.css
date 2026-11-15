@@ -79,18 +79,6 @@
     background var(--transition-fast);
 }
 
-.link::before {
-  content: '[';
-  color: var(--color-text-muted);
-  margin-right: 0.15em;
-}
-
-.link::after {
-  content: ']';
-  color: var(--color-text-muted);
-  margin-left: 0.15em;
-}
-
 .link:hover {
   color: var(--color-text-primary);
   background: var(--color-overlay-light);
@@ -113,11 +101,6 @@
 
   .path {
     display: none;
-  }
-
-  .link::before,
-  .link::after {
-    content: none;
   }
 }
 

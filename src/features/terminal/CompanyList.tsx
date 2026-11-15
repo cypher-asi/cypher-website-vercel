@@ -3,7 +3,7 @@ import type { Company } from '@/lib/site';
 import styles from './Workspace.module.css';
 
 /**
- * Each company filters the Writing panel to its posts. A company with no
+ * Each company filters the Research panel to its posts. A company with no
  * writing yet links out to its own site instead.
  */
 export function CompanyList({

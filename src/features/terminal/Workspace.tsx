@@ -10,7 +10,7 @@ import { selectWriting, type PostRef } from './select';
 import styles from './Workspace.module.css';
 
 /**
- * The home workspace: Writing over Companies on the left, the open post in
+ * The home workspace: Research over Companies on the left, the open post in
  * the middle, and its sources on the right. Opens `target`, or else the
  * latest post (of `company`, when set).
  */
@@ -30,16 +30,16 @@ export async function Workspace({
     <div className={styles.workspace}>
       <div className={styles.left}>
         <Panel
-          title="Writing"
+          title="Research"
           className={styles.writing}
           meta={company ? `${company.label} · ${rows.length}` : rows.length}
         >
           {feed === null ? (
-            <p className={styles.empty}>Writing is unavailable right now.</p>
+            <p className={styles.empty}>Research is unavailable right now.</p>
           ) : rows.length ? (
             <WritingList rows={rows} activeId={post && post !== 'unavailable' ? post.id : null} query={query} />
           ) : (
-            <p className={styles.empty}>No writing yet.</p>
+            <p className={styles.empty}>No research yet.</p>
           )}
         </Panel>
         <Panel

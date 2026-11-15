@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import type { SiteLink } from '@/lib/site';
 import styles from './TerminalBar.module.css';
 
-/** `/writing/zode/news/x` reads as `~/writing/zode/news/x`; the home workspace is `~/writing`. */
-const promptPath = (pathname: string): string => (pathname === '/' ? '~/writing' : `~${pathname.replace(/\/+$/, '')}`);
+/** `/writing/zode/news/x` reads as `~/writing/zode/news/x`; the home workspace is `~/research`. */
+const promptPath = (pathname: string): string => (pathname === '/' ? '~/research' : `~${pathname.replace(/\/+$/, '')}`);
 
 const isActive = (pathname: string, href: string): boolean =>
   href === '/' ? pathname === '/' || pathname.startsWith('/writing') : pathname === href || pathname.startsWith(`${href}/`);
