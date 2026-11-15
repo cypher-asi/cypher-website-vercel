@@ -43,16 +43,17 @@
   border-color: var(--site-border-action);
 }
 
-/* A strip of filled cells; the 1px gaps let the border color show through as
-   separators. */
+/* A framed strip of filled cells, inset from the panel edges and set off from
+   the body below. */
 .panelHeader {
   display: flex;
   align-items: stretch;
-  gap: 1px;
+  gap: 2px;
   flex-shrink: 0;
-  height: 26px;
-  background: var(--color-border-light);
-  border-bottom: 1px solid var(--color-border-light);
+  height: 30px;
+  margin: var(--space-2);
+  padding: 2px;
+  border: 1px solid var(--color-border-light);
   font-family: var(--font-mono), 'Fira Code', monospace;
   font-size: var(--text-2xs);
   letter-spacing: 0.1em;
@@ -60,30 +61,25 @@
   white-space: nowrap;
 }
 
-.panelTitle {
+.panelTitle,
+.panelMeta {
   display: flex;
   align-items: center;
   padding: 0 var(--space-3);
   background: var(--color-accent);
+  border: 1px solid #000;
   color: var(--color-accent-contrast);
+}
+
+.panelTitle {
   font-family: inherit;
   font-size: inherit;
   font-weight: var(--font-semibold);
   letter-spacing: 0.12em;
 }
 
-.panelFill {
-  flex: 1;
-  min-width: 0;
-  background: var(--color-elevated);
-}
-
 .panelMeta {
-  display: flex;
-  align-items: center;
-  padding: 0 var(--space-3);
-  background: var(--color-elevated);
-  color: var(--color-text-muted);
+  margin-left: auto;
 }
 
 .panelMeta kbd {
@@ -91,7 +87,8 @@
 }
 
 .panelLink:hover {
-  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .panelBody {

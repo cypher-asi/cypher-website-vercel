@@ -19,7 +19,6 @@ export function Panel({
     <section className={`${styles.panel} ${className ?? ''}`} aria-label={title}>
       <header className={styles.panelHeader}>
         <h2 className={styles.panelTitle}>{title}</h2>
-        <span className={styles.panelFill} aria-hidden />
         {meta && <div className={styles.panelMeta}>{meta}</div>}
       </header>
       <div className={styles.panelBody} id={bodyId}>

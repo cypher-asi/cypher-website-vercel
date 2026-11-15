@@ -62,7 +62,6 @@ export function ProductModal({ product, gridRect, onClose }: ProductModalProps) 
       <div
         className={styles.panel}
         style={panelStyle}
-        data-accent={product.accent}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
