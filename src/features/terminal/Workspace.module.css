@@ -74,6 +74,8 @@
 
 .panelMeta {
   margin-left: auto;
+  background: var(--color-border-light);
+  color: var(--color-text-secondary);
 }
 
 .panelMeta kbd {
