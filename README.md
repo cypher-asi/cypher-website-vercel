@@ -98,8 +98,8 @@ Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. 
 | `/writing/{site}/{kind}/{slug}` | The workspace with one post open. `?company=` filters Research to one company. |
 | `/companies` | The company grid and key facts |
 | `/vision` | Mission statement |
-| `/research` | Papers index (the "papers" link), with papers at `/research/the-grid`, `/research/aura-harness`, `/research/zns` and `/research/zero-os` |
-| `/research/sources` | Search every source cited by the writing |
+| `/papers` | Papers index (the "papers" link), with papers at `/papers/the-grid`, `/papers/aura-harness`, `/papers/zns` and `/papers/zero-os`. `/research/*` redirects here. |
+| `/papers/sources` | Search every source cited by the writing |
 | `/privacy`, `/terms` | Legal documents |
 | `/contact` | Contact details |
 | `/docs` | Getting-started guide |

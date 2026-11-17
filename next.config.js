@@ -6,6 +6,12 @@ const nextConfig = {
   async rewrites() {
     return [{ source: '/post-media/:path*', destination: '/api/v1/media/:path*' }];
   },
+  async redirects() {
+    return [
+      { source: '/research', destination: '/papers', permanent: true },
+      { source: '/research/:path*', destination: '/papers/:path*', permanent: true },
+    ];
+  },
   // Windows/virtualized filesystems often miss native file-change events, so
   // Fast Refresh wouldn't pick up edits without a manual restart. Polling the
   // source tree in dev makes hot reload reliable. (node_modules is excluded to

@@ -10,7 +10,7 @@ export function PaperList({ activeSlug }: { activeSlug?: string }) {
         <li key={paper.slug}>
           <Link
             className={styles.row}
-            href={`/research/${paper.slug}`}
+            href={`/papers/${paper.slug}`}
             aria-current={paper.slug === activeSlug ? 'page' : undefined}
           >
             <span className={styles.rowDate}>{paper.year}</span>

@@ -18,14 +18,28 @@
   white-space: nowrap;
 }
 
+.search {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* A wrapping field: long queries break onto new lines and the box grows. */
 .input {
+  display: block;
   flex: 1;
+  width: 100%;
   min-width: 0;
   border: 0;
   outline: 0;
   background: transparent;
   font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
   caret-color: var(--color-accent);
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  field-sizing: content;
 }
 
 .input::placeholder {

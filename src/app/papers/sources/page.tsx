@@ -9,7 +9,7 @@ import { SourcesSearch } from '../_components/SourcesSearch';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Sources | Research | Cypher',
+  title: 'Sources | Papers | Cypher',
   description: 'Every source cited across the writing of Cypher and its companies, searchable in one index.',
 };
 
@@ -41,7 +41,7 @@ export default async function SourcesIndex({ searchParams }: { searchParams: Sea
           </p>
           <SourcesSearch query={q} />
           {q && (
-            <Link className={styles.clear} href="/research/sources">
+            <Link className={styles.clear} href="/papers/sources">
               Clear search
             </Link>
           )}

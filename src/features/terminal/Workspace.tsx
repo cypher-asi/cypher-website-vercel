@@ -6,7 +6,7 @@ import { Panel } from './Panel';
 import { Reader } from './Reader';
 import { SourcesList } from './SourcesPanel';
 import { WritingList } from './WritingList';
-import { loadCounts, loadFeed, loadPost, type WritingPost } from './data';
+import { loadFeed, loadPost, type WritingPost } from './data';
 import { selectWriting, type PostRef } from './select';
 import styles from './Workspace.module.css';
 
@@ -22,7 +22,7 @@ export async function Workspace({
   company: Company | null;
   target?: PostRef;
 }) {
-  const [feed, counts] = await Promise.all([loadFeed(), loadCounts()]);
+  const feed = await loadFeed();
   const { rows, open } = selectWriting(feed, company, target);
   const post: WritingPost | null | 'unavailable' = open ? await loadPost(open.site, open.kind, open.slug) : null;
   const query = company ? `company=${company.id}` : '';
@@ -52,7 +52,7 @@ export async function Workspace({
             </Link>
           }
         >
-          <CompanyList companies={SITE.companies} counts={counts} activeId={company?.id ?? null} />
+          <CompanyList companies={SITE.companies} />
         </Panel>
       </div>
 
@@ -70,7 +70,7 @@ export async function Workspace({
         title="Sources"
         className={styles.sourcesPanel}
         meta={
-          <Link className={styles.panelLink} href="/research/sources">
+          <Link className={styles.panelLink} href="/papers/sources">
             index ↗
           </Link>
         }

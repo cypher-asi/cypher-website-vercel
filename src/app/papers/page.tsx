@@ -9,18 +9,18 @@ import { SourcesSearch } from './_components/SourcesSearch';
 import styles from './page.module.css';
 
 export const metadata: Metadata = {
-  title: 'Research | Cypher',
+  title: 'Papers | Cypher',
   description:
     'Whitepapers and open research on intelligence, distributed systems, and protocols from Cypher.',
 };
 
-export default function ResearchIndex() {
+export default function PapersIndex() {
   return (
     <Frame className={styles.frame}>
       <Panel title="Papers" meta={papers.length}>
         <div className={styles.list}>
           {papers.map((paper) => (
-            <Link key={paper.slug} href={`/research/${paper.slug}`} className={styles.card}>
+            <Link key={paper.slug} href={`/papers/${paper.slug}`} className={styles.card}>
               <div className={styles.cardMeta}>
                 <span>{paper.year}</span>
                 {!paper.available && <span className={styles.cardBadge}>coming soon</span>}
@@ -36,7 +36,7 @@ export default function ResearchIndex() {
       <Panel
         title="Sources"
         meta={
-          <Link className={panel.panelLink} href="/research/sources">
+          <Link className={panel.panelLink} href="/papers/sources">
             index ↗
           </Link>
         }
