@@ -54,10 +54,10 @@ export const SITE: SiteConfig = {
     description: 'A sovereign AI stack spanning energy, infrastructure, protocols, and end-products.',
   },
   links: [
-    { label: 'Research', href: '/' },
-    { label: 'Companies', href: '/companies' },
-    { label: 'Papers', href: '/papers' },
-    { label: 'Mission', href: '/mission' },
+    { label: 'RESEARCH', href: '/' },
+    { label: 'COMPANIES', href: '/companies' },
+    { label: 'PAPERS', href: '/papers' },
+    { label: 'MISSION', href: '/mission' },
   ],
   companies: [
     { id: 'aura', label: 'AURA', description: 'An agentic coding system', href: 'https://aura.ai', siteId: 'aura' },
