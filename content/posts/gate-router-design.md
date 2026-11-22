@@ -158,6 +158,8 @@ A failed check is not yet a reason to pay for a stronger model. Tests fail becau
 - `judged_fail`: counts against the model and moves the work up.
 - `judged_excused`: counts for nothing and leaves the work where it is.
 
+Which model judges depends on the work:
+
 - **Failed checks** are judged by the strongest Opus available, since that verdict decides whether to pay for Opus. It is never asked about work on its own tier.
 - **Unchecked work** on a standard model or stronger is judged by the model that did it. Opus costs twice what Sonnet does per token,[2](https://platform.claude.com/docs/en/about-claude/pricing) so judging Sonnet's work on Opus can cost more than the work itself.
 - **A clean run** pays for no judge at all.
