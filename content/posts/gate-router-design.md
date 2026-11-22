@@ -6,12 +6,12 @@ summary: GATE starts each turn on the cheapest model proven for the job, checks 
 
 ## Introduction
 
-GATE is the router behind Aura's `gate` model id. Most routers pick a model once, up front, with a classifier trained offline on one-shot prompts. A coding agent's turn is different: it runs for minutes, makes dozens of model calls, and ends in something that can be checked. So GATE decides, then checks:
+GATE is the router behind AURA's `gate` model id. Most routers pick a model once, up front, with a classifier trained offline on one-shot prompts. A coding agent's turn is different: it runs for minutes, makes dozens of model calls, and ends in something that can be checked. So GATE decides, then checks:
 
 - **Start cheap.** Label the turn, then run it on the cheapest model the record shows is good enough for that kind of work.
 - **Verify.** Read the evidence the turn leaves behind: its tests, its builds and its final reply.
 - **Escalate only on fault.** When a check fails, a judge decides whether the model or the environment is to blame. Only a model's fault moves the work to a stronger tier.
-- **Learn without training.** The routing table is a fold over Aura's append-only record. Replaying the record rebuilds the same table.
+- **Learn without training.** The routing table is a fold over AURA's append-only record. Replaying the record rebuilds the same table.
 
 Initial results, on 16 tasks from the HARD-51 subset of SWE-Bench Pro, each run once on GATE and once on Claude Opus 5.5 alone:
 
@@ -51,7 +51,7 @@ The examples are real. They come from Compare #37, which ran SWE-Bench Pro tasks
 
 ### 3.1 Candidates and tiers
 
-GATE routes only among models the user can call right now: local models, models on Aura's router when signed in, and Claude or ChatGPT models when those plans are linked. A model reachable two ways is kept once, on the user's plan, since that is already paid for. Each model has a tier: `local`, `fast` (Haiku, GPT mini), `standard` (Sonnet) or `frontier` (Opus, GPT-5). Tiers set where work starts and what "stronger" means when it moves up.
+GATE routes only among models the user can call right now: local models, models on AURA's router when signed in, and Claude or ChatGPT models when those plans are linked. A model reachable two ways is kept once, on the user's plan, since that is already paid for. Each model has a tier: `local`, `fast` (Haiku, GPT mini), `standard` (Sonnet) or `frontier` (Opus, GPT-5). Tiers set where work starts and what "stronger" means when it moves up.
 
 ### 3.2 Classify
 
@@ -135,11 +135,11 @@ A model proven on 10 tries can still fail on the 11th, and the cheapest router t
 
 SWE-Bench Pro is a benchmark of long-horizon changes to large production codebases.[5](https://arxiv.org/abs/2509.16941) We use the 51-task HARD-51 subset of its V2 release.[6](https://github.com/scaleapi/SWE-bench_Pro-os) Each task runs in its own container image. The agent works on a copy of the repository and runs commands in a fresh container without network. Grading follows SWE-Bench Pro: the changes are applied as one patch in a fresh container, and every hidden test must pass, including those that passed before.
 
-A comparison (`/compare` in Aura) runs each task once per arm, in its own git worktree, with no one approving calls. Neither arm sees the hidden tests.
+A comparison (`/compare` in AURA) runs each task once per arm, in its own git worktree, with no one approving calls. Neither arm sees the hidden tests.
 
 - **GATE arm:** routes as a user's turns would, with exploration off, and is followed up, judged and escalated as usual.
 - **Opus arm:** every turn and subtask on Opus 5.5.
-- **Cost:** list prices[2](https://platform.claude.com/docs/en/about-claude/pricing) applied to each call's recorded token usage, including cache reads and writes. GATE's cost includes its classifier, criteria, judge and review calls. The figures are generated from the run logs by a script in the Aura repository, which also checks that per-call prices add up to each run's recorded cost.
+- **Cost:** list prices[2](https://platform.claude.com/docs/en/about-claude/pricing) applied to each call's recorded token usage, including cache reads and writes. GATE's cost includes its classifier, criteria, judge and review calls. The figures are generated from the run logs by a script in the AURA repository, which also checks that per-call prices add up to each run's recorded cost.
 
 ### 4.2 Results
 
@@ -174,7 +174,7 @@ Every regression had the same shape: a check that misread a signal, followed by 
 - **#29 and #32: Haiku passed its own tests.** Medium work started on the fast tier. On an Ansible task about multipart forms, Haiku wrote tests for its own code, passed them, and failed the hidden ones, so GATE never saw a failure to escalate from. Work that is not easy now starts on the standard tier.
 - **#30 and #31: correct work retried at max effort.** A reply saying only that a lint step could not run counted as unverified, and a piped test command whose exit status came from `grep` counted as a failure. On Opus, both sent correct work round again at max effort, and in #31 two such retries cost at least $4.55. Checks are now decided by what they print, and the strongest model is pushed harder only after a judge finds its work unfinished.
 - **#33: the table overreacted.** Sonnet had fallen below the target on hard work, so two of the five tasks started on Opus. One ran at high effort, then took a second pass at max effort: $2.43, on a task Opus alone finished for $0.42. A standard model now loses its work only when starting on it has also become dearer than starting on the next tier, and the second pass on the strongest model needs a judge's finding.
-- **Between #33 and #36: checking cost more than the work.** On a separate suite (Compare #34, on Aura's own `gate_hard` tasks), judging Sonnet's work on Opus cost more than the work itself and changed no outcome. Unchecked work below the strongest tier is now judged on its own model, and logged reviews are sampled.
+- **Between #33 and #36: checking cost more than the work.** On a separate suite (Compare #34, on AURA's own `gate_hard` tasks), judging Sonnet's work on Opus cost more than the work itself and changed no outcome. Unchecked work below the strongest tier is now judged on its own model, and logged reviews are sampled.
 
 The first four runs in the chart predate the logging of GATE's own calls, so their GATE cost leaves out the classifier and judge. The regressions were worse than shown.
 
@@ -183,10 +183,10 @@ The first four runs in the chart predate the logging of GATE's own calls, so the
 - **Small samples.** #37 is 16 tasks run once per arm, and the iteration chart rests on 4. The Opus arm's cost on those 4 ranged from $2.00 to $3.09 between comparisons. A 51% saving on 16 tasks is a result, not a constant.
 - **A pass-rate ceiling.** Both arms passed every task, so #37 cannot show GATE keeping quality on work Opus can do and Sonnet cannot, only that it lost none. In earlier comparisons GATE failed one task that Opus passed, so the risk is real.
 - **One provider.** Every model was a Claude model on one plan (Haiku, Sonnet, Opus). Other providers have different price gaps and different cheap-tier failure modes.
-- **List prices, not plan usage.** On a subscription, what matters is the share of the plan's usage window a run consumes. Aura's comparison view reports that too. This post uses list prices because readers can check them.
+- **List prices, not plan usage.** On a subscription, what matters is the share of the plan's usage window a run consumes. AURA's comparison view reports that too. This post uses list prices because readers can check them.
 - **A moving target.** This describes GATE as of Nov 22, 2026. #37 ran on commit `d07d3e3a`. The changes committed after it (`af4874a5`) are not yet measured on these tasks: when a standard model keeps its work, a second pass on the strongest model only after a judge's finding, ignoring test runs made with the change stashed, and showing the worker its criteria.
 - **A run still in progress.** #37 kept running after the snapshot used here (Nov 22, 02:19). By publication, 20 pairs had finished: both arms passed all 20, and GATE cost $8.40 against $16.20, 48% less. The figures and walkthrough keep to the first 16.
-- **Hidden tests are not all of quality.** Aura's comparisons also run a blind judge over both arms' diffs and replies. That verdict for #37 is not reported here.
+- **Hidden tests are not all of quality.** AURA's comparisons also run a blind judge over both arms' diffs and replies. That verdict for #37 is not reported here.
 
 The next evaluation is GATE against other routers on the same tasks, using public router leaderboards that report cost per task[7](https://openrouter.ai/benchmarks/routers) and step-level benchmarks such as TwinRouterBench.[8](https://arxiv.org/abs/2605.18859)
 
