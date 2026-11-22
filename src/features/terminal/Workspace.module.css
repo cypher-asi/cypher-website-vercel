@@ -161,6 +161,22 @@
   line-height: var(--leading-tight);
 }
 
+/* A post: its title, and its company against the right edge of the cell. */
+.writingRow {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'title company';
+}
+
+.writingRow .rowTitle {
+  margin-top: 0;
+}
+
+.writingRow .rowCompany {
+  justify-self: end;
+  text-align: right;
+  white-space: nowrap;
+}
+
 .company {
   grid-template-columns: minmax(0, 1fr);
 }

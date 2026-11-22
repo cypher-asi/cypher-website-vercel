@@ -48,14 +48,13 @@ export function WritingList({ rows, activeId, query }: { rows: WritingRow[]; act
           <li key={row.id}>
             <Link
               ref={active ? activeRef : undefined}
-              className={styles.row}
+              className={`${styles.row} ${styles.writingRow}`}
               href={withQuery(row.href, query)}
               aria-current={active ? 'page' : undefined}
               scroll={false}
             >
-              <span className={styles.rowDate}>{row.publishedAt.slice(0, 10)}</span>
-              <span className={styles.rowCompany}>{row.company}</span>
               <span className={styles.rowTitle}>{row.title}</span>
+              <span className={styles.rowCompany}>{row.company}</span>
             </Link>
           </li>
         );
