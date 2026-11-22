@@ -317,6 +317,13 @@ figure.figure {
     font-size: var(--text-xs);
   }
 
+  /* Narrow steps hyphenate long words rather than spilling past their column. */
+  .stepStage,
+  .stepDetail {
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
   .track[data-marker]::after {
     top: -2px;
     bottom: -2px;

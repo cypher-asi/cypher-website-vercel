@@ -45,10 +45,10 @@
   /* Post titles, in the ZODE site's light headline face. */
   --font-headline: var(--font-albert), system-ui, -apple-system, sans-serif;
 
-  --text-2xs: 10px;
-  --text-xs: 12px;
-  --text-sm: 13px;
-  --text-base: 14px;
+  --text-2xs: 12px;
+  --text-xs: 13px;
+  --text-sm: 14px;
+  --text-base: 15px;
   --text-lg: 16px;
   --text-xl: 18px;
 

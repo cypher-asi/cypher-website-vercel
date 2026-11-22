@@ -133,7 +133,7 @@
 
 .metaLabel {
   font-family: var(--font-mono), 'Fira Code', monospace;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-muted);
@@ -186,7 +186,7 @@
   margin-top: 0.25rem;
   padding: 0.6rem 1.1rem;
   font-family: var(--font-mono), 'Fira Code', monospace;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   text-decoration: none;

@@ -33,7 +33,7 @@
   height: 28px;
   border-radius: 50%;
   background: var(--color-overlay-light);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: var(--font-semibold);
   letter-spacing: 0.02em;
   color: var(--color-text-primary);
@@ -41,7 +41,7 @@
 
 .citation {
   margin-left: 0.1em;
-  font-size: 0.7em;
+  font-size: 0.8em;
   font-weight: 500;
   line-height: 0;
 }
