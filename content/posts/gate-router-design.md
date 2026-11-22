@@ -230,15 +230,15 @@ Model routing is now a field of its own, and an industry. OpenAI describes GPT-5
 
 GATE also leans on two older ideas: strong models can judge other models' work,[28](https://arxiv.org/abs/2306.05685) and an agent retried with written feedback on what went wrong does better than one simply retried.[3](https://arxiv.org/abs/2303.11366)
 
-| | When it decides | What it routes on | How it learns | Unit | How the result is checked |
-|---|---|---|---|---|---|
-| FrugalGPT, AutoMix | after each answer | a scorer, or the model's own check | offline, on labelled queries | query | scorer or self-verification |
-| RouteLLM, Hybrid LLM | before the work | predicted win rate or difficulty | offline, on preference or benchmark data | query | not checked |
-| Router-R1 | during, over rounds | an LLM policy | reinforcement learning | query | rule-based reward |
-| GPT-5's router | before each reply | conversation type, complexity, intent | continuously, on user signals | message | not stated |
-| OpenRouter Auto Code | each turn | a fast model's rating, measured pass rate and cost | from measured runs | agent turn | failure signals such as failing tests |
-| Triage | before the task | code health metrics | heuristics or a trained classifier | SWE task | a verification gate |
-| **GATE** | **before, then after the work** | **category and difficulty, then the turn's evidence** | **online, a fold over its own record** | **agent turn and subtask** | **the turn's tests, GATE's follow-ups, a judge** |
+| Router | Decides | Learns from | Checks the result with |
+|---|---|---|---|
+| FrugalGPT, AutoMix | after each answer | labelled queries | a scorer or self-check |
+| RouteLLM, Hybrid LLM | before the work | preference data | nothing |
+| Router-R1 | over several rounds | reinforcement learning | a rule-based reward |
+| GPT-5's router | before each reply | user signals | not stated |
+| OpenRouter Auto Code | each agent turn | measured runs | failing tests |
+| Triage | before the task | code health metrics | a verification gate |
+| **GATE** | **before and after each turn** | **its own record** | **tests and a judge** |
 
 The right-hand column is the difference that matters. A router that decides only before the work has to be right the first time, so it leans towards the expensive model whenever it is unsure. A router that checks the result can afford to be wrong cheaply, as long as the check is good and escalating is cheap. Most of GATE's design, and most of its bugs, are about making that check good.
 

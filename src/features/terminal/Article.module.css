@@ -178,11 +178,16 @@
   font-size: var(--text-base);
 }
 
+/* `break-word`, unlike the prose's `anywhere`, leaves words out of a cell's
+   minimum width, so columns are not squeezed until words split mid-word. */
 .prose th,
 .prose td {
   padding: 8px 10px;
   border-bottom: 1px solid var(--color-border-light);
+  line-height: 1.5;
   text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
 }
 
 .prose th {
