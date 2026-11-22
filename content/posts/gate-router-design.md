@@ -19,7 +19,6 @@ Initial results, on 20 tasks from the HARD-51 subset of SWE-Bench Pro, each run 
 - **48% cheaper.** $8.40 against $16.20, including GATE's own classifier, criteria, judge and review calls.
 - **13% faster.** 111 minutes of wall time against 128.
 - **Cheaper on 19 of 20 tasks,** at 0.26× to 0.88× of Opus's cost per task.
-- **Hard won.** It took seven comparisons to get here, and in three of the first five GATE cost more than Opus.
 
 ## 1. The idea
 
@@ -64,7 +63,7 @@ In #37, Haiku 5.5 made 20 calls of one to four seconds, $0.008 in total. It labe
 The table has a row per level (turn or subtask), category and model, holding tries, successes and cost. GATE picks the cheapest model with at least 10 counted outcomes in the category and a success rate of at least 85% (`AURA_GATE_MIN_TRIES`, `AURA_GATE_TARGET`). Without one, it uses the category's start model: the cheapest fast-tier model for `easy` work, and the cheapest standard-tier model for everything else, including all planning. Frontier models are reached only by escalation, never by default.
 
 - **Expected cost, not list price.** A model that is cheaper per token can need several times the tokens. An untried model is priced from its list price, scaled by how the tried models of its tier compare with theirs.
-- **Early rule-out.** A model is dropped as soon as it can no longer reach the target over its first 10 tries (`Row::can_still_reach`). Two failures in its first two tries is enough.
+- **Early rule-out.** A fast-tier model is dropped as soon as it can no longer reach the target over its first 10 tries (`Row::can_still_reach`). Two failures in its first two tries is enough. A standard-tier model hands its work up only when starting on it has also become dearer than starting on the next tier: when a turn on it costs at least what a turn on the stronger model does, times the share of its turns that succeed.
 - **Exploration.** With probability `AURA_GATE_EXPLORE` (5%), a turn tries a cheaper model that has not been ruled out, and logs the choice with its probability so the outcome can be weighed fairly. This is the logged-propensity idea from contextual bandits.[1](https://arxiv.org/abs/1003.0146) Comparisons switch exploration off, so a benchmark measures the policy, not its experiments.
 
 Effort follows difficulty: `low`, `medium` or `high`, never `max` to start. A route recorded in #37:
@@ -89,7 +88,7 @@ The turn runs in the normal agent loop on the chosen model. Work that can be spl
 
 ### 3.6 Verify
 
-This is where a router that checks results earns its savings, and where most of GATE's bugs have been. A code turn ends in one of four signals: an error, `checks_failed`, `checks_passed`, or nothing to go on. Telling which is harder than it sounds.
+This is where a router that checks results earns its savings. A code turn ends in one of four signals: an error, `checks_failed`, `checks_passed`, or nothing to go on. Telling which is harder than it sounds.
 
 - **Find the check.** GATE takes the turn's last test or build command, including wrapped ones such as `sh .swe/run 'go test ./internal/config/...'`. When the exit status may belong to another command (`pytest | grep Error` that matched nothing), the output decides: `12 passed` passes, failures fail, and anything else says nothing. A test run with the change stashed tested the old code, so it does not count.
 - **Follow up on unchecked work.** A code turn that ran no test or build is asked once to run the tests covering its change and restate its answer. If it still does not, the harness runs the project's own test command. If nothing can run, a judge reads the request, the diff, the commands and the reply, and rules whether the work is done.
@@ -101,7 +100,7 @@ This is where a router that checks results earns its savings, and where most of 
 A failed check is not yet a reason to pay for a stronger model. Tests fail because of the environment, because they were already failing, or because the request cannot be done. So the judge answers one narrow question: not "is this correct?" but "was the model at fault?". `judged_fail` counts against the model and moves the work up. `judged_excused` counts for nothing and leaves the work where it is.
 
 - **Failed checks** are judged by the strongest Opus available, since that verdict decides whether to pay for Opus. It is never asked about work on its own tier.
-- **Unchecked work** on a standard model or stronger is judged by the model that did it. Opus costs twice what Sonnet does per token,[2](https://platform.claude.com/docs/en/about-claude/pricing) and judging Sonnet's work on Opus had come to cost more than the work.
+- **Unchecked work** on a standard model or stronger is judged by the model that did it. Opus costs twice what Sonnet does per token,[2](https://platform.claude.com/docs/en/about-claude/pricing) so judging Sonnet's work on Opus can cost more than the work itself.
 - **A clean run** pays for no judge at all.
 
 In #37 six Sonnet turns ended with their own tests failing. The Opus judge excused all six, none moved up, and all six passed the hidden tests. One turn ended with nothing checked, and Sonnet's judge found a real bug:
@@ -161,30 +160,13 @@ gate-spend
 
 GATE's own calls were 15% of its spend, about two thirds of it on judging and reviewing. That is the price of checking results, and the obvious next place to save, since most verdicts left the work where it was.
 
-### 4.3 How the design got here
-
-The design took seven comparisons. Four tasks ran in every comparison from #29 to #37, so their cost ratio tracks what each change bought:
-
-```chart
-gate-iterations
-```
-
-Every regression had the same shape: a check that misread a signal, followed by an expensive escalation.
-
-- **#29 and #32: Haiku passed its own tests.** Medium work started on the fast tier. On an Ansible task about multipart forms, Haiku wrote tests for its own code, passed them, and failed the hidden ones, so GATE never saw a failure to escalate from. Work that is not easy now starts on the standard tier.
-- **#30 and #31: correct work retried at max effort.** A reply saying only that a lint step could not run counted as unverified, and a piped test command whose exit status came from `grep` counted as a failure. On Opus, both sent correct work round again at max effort, and in #31 two such retries cost at least $4.55. Checks are now decided by what they print, and the strongest model is pushed harder only after a judge finds its work unfinished.
-- **#33: the table overreacted.** Sonnet had fallen below the target on hard work, so two of the five tasks started on Opus. One ran at high effort, then took a second pass at max effort: $2.43, on a task Opus alone finished for $0.42. A standard model now loses its work only when starting on it has also become dearer than starting on the next tier, and the second pass on the strongest model needs a judge's finding.
-- **Between #33 and #36: checking cost more than the work.** On a separate suite (Compare #34, on AURA's own `gate_hard` tasks), judging Sonnet's work on Opus cost more than the work itself and changed no outcome. Unchecked work below the strongest tier is now judged on its own model, and logged reviews are sampled.
-
-The first four runs in the chart predate the logging of GATE's own calls, so their GATE cost leaves out the classifier and judge. The regressions were worse than shown.
-
 ## 5. Threats to validity
 
-- **Small samples.** #37 is 20 tasks run once per arm, and the iteration chart rests on 4. The Opus arm's cost on those 4 ranged from $2.00 to $3.09 between comparisons. A 48% saving on 20 tasks is a result, not a constant.
-- **A pass-rate ceiling.** Both arms passed every task, so #37 cannot show GATE keeping quality on work Opus can do and Sonnet cannot, only that it lost none. In earlier comparisons GATE failed one task that Opus passed, so the risk is real.
+- **Small samples.** #37 is 20 tasks run once per arm. A 48% saving on 20 tasks is a result, not a constant.
+- **A pass-rate ceiling.** Both arms passed every task, so #37 cannot show GATE keeping quality on work Opus can do and Sonnet cannot, only that it lost none.
 - **One provider.** Every model was a Claude model on one plan (Haiku, Sonnet, Opus). Other providers have different price gaps and different cheap-tier failure modes.
 - **List prices, not plan usage.** On a subscription, what matters is the share of the plan's usage window a run consumes. AURA's comparison view reports that too. This post uses list prices because readers can check them.
-- **A moving target.** This describes GATE as of Nov 22, 2026. #37 ran on commit `d07d3e3a`. The changes committed after it (`af4874a5`) are not yet measured on these tasks: when a standard model keeps its work, a second pass on the strongest model only after a judge's finding, ignoring test runs made with the change stashed, and showing the worker its criteria.
+- **One build.** #37 ran on commit `d07d3e3a`. A few rules described here, such as when a standard model hands its work up and showing the worker its criteria, came after it and are not yet measured on these tasks.
 - **Hidden tests are not all of quality.** AURA's comparisons also run a blind judge over both arms' diffs and replies. That verdict for #37 is not reported here.
 
 The next evaluation is GATE against other routers on the same tasks, using public router leaderboards that report cost per task[7](https://openrouter.ai/benchmarks/routers) and step-level benchmarks such as TwinRouterBench.[8](https://arxiv.org/abs/2605.18859)
@@ -239,7 +221,7 @@ GATE also leans on two older ideas: strong models can judge other models' work,[
 | Triage | before the task | code health metrics | a verification gate |
 | **GATE** | **before and after each turn** | **its own record** | **tests and a judge** |
 
-The right-hand column is the difference that matters. A router that decides only before the work has to be right the first time, so it leans towards the expensive model whenever it is unsure. A router that checks the result can afford to be wrong cheaply, as long as the check is good and escalating is cheap. Most of GATE's design, and most of its bugs, are about making that check good.
+The right-hand column is the difference that matters. A router that decides only before the work has to be right the first time, so it leans towards the expensive model whenever it is unsure. A router that checks the result can afford to be wrong cheaply, as long as the check is good and escalating is cheap. Most of GATE's design is about making that check good.
 
 ## Sources
 
