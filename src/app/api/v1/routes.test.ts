@@ -29,6 +29,8 @@ vi.mock('next/server', () => ({ after: vi.fn() }));
 
 import { hashKey } from '@/features/posts/auth';
 import { SlugTakenError } from '@/features/posts/repo';
+import { POSTS_TAG } from '@/features/posts/types';
+import { revalidateTag } from 'next/cache';
 import * as list from './sites/[site]/posts/route';
 import * as one from './sites/[site]/posts/[id]/route';
 import * as status from './sites/[site]/posts/[id]/status/route';
@@ -202,6 +204,18 @@ describe('PATCH /sites/:site/posts/:id', () => {
     expect(repo.setStatus).toHaveBeenCalledWith('zode', ID, 'published', 'n@zero.tech');
     expect(syncPostSources).toHaveBeenCalledWith(ID, 'Body.');
     expect((await res.json()).post.status).toBe('published');
+    // Next 16: expire the cached pages at once, not stale-while-revalidate.
+    expect(revalidateTag).toHaveBeenCalledWith(POSTS_TAG, { expire: 0 });
+  });
+
+  it('leaves the cache alone when only a draft changes', async () => {
+    repo.updatePost.mockResolvedValue(post());
+    const res = await one.PATCH(
+      request('PATCH', `/api/v1/sites/zode/posts/${ID}`, { key: ZODE_KEY, body: { draft, editorEmail: 'n@zero.tech' } }),
+      postCtx,
+    );
+    expect(res.status).toBe(200);
+    expect(revalidateTag).not.toHaveBeenCalled();
   });
 
   it('hides internal errors', async () => {

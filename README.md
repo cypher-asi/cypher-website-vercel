@@ -19,6 +19,7 @@ npm install
 
 ```bash
 npm run dev       # Start dev server (http://localhost:3000)
+npm run dev:poll  # Same, polling for file changes (Windows/VM filesystems; or set NEXT_DEV_POLL_MS)
 npm run build     # Migrate the database, then build for production
 npm run start     # Serve production build
 npm run typecheck # Type-check with tsc (no emit)
