@@ -95,7 +95,8 @@
   border: 1px solid var(--color-border-light);
 }
 
-.panel:focus-within .panelBody {
+/* Keyboard focus only: a mouse click on a row also focuses it, and shouldn't recolour the panel. */
+.panel:has(:focus-visible) .panelBody {
   border-color: var(--site-border-action);
 }
 

@@ -15,6 +15,11 @@ const pollIntervalMs =
 const nextConfig = {
   devIndicators: false,
   ...(pollIntervalMs ? { watchOptions: { pollIntervalMs } } : {}),
+  experimental: {
+    // Keep visited pages in the client router cache for a while, so switching
+    // back to a post already read in the workspace doesn't wait on the server.
+    staleTimes: { dynamic: 60 },
+  },
   // Post bodies written on company sites link their images at /post-media/...,
   // the path those sites proxy to /api/v1/media, so they render here unchanged.
   async rewrites() {

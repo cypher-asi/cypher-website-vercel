@@ -1,5 +1,6 @@
 import 'server-only';
 import { unstable_cache } from 'next/cache';
+import { cache } from 'react';
 import { getPostSources, getPublishedBySlug, listPublishedFeed, publishedCountsBySite } from '@/features/posts/repo';
 import { POSTS_TAG, isPostKind, type Post, type PostSource } from '@/features/posts/types';
 
@@ -87,9 +88,11 @@ export function loadCounts(): Promise<Record<string, number>> {
   });
 }
 
-export function loadPost(site: string, kind: string, slug: string): Promise<WritingPost | null | 'unavailable'> {
-  return cachedPost(site, kind, slug).catch((error: unknown) => {
-    console.error(`[writing] failed to load ${site}/${kind}/${slug}`, error);
-    return 'unavailable' as const;
-  });
-}
+/** Deduped per request: a post page asks for its post in its metadata, the page and the workspace. */
+export const loadPost = cache(
+  (site: string, kind: string, slug: string): Promise<WritingPost | null | 'unavailable'> =>
+    cachedPost(site, kind, slug).catch((error: unknown) => {
+      console.error(`[writing] failed to load ${site}/${kind}/${slug}`, error);
+      return 'unavailable' as const;
+    }),
+);
