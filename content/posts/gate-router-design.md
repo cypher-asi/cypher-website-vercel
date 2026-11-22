@@ -30,7 +30,11 @@ GATE does the same with models. Each turn opens with a line stating its choice:
 gate → claude-sonnet-5-5 (claude plan) at high effort · multi_file_change, default
 ```
 
-That is the model, who pays for it (the user's Claude plan), the effort, the prompt's category, and the reason: `default` (where this kind of work starts), `proven` (the cheapest model the record shows is good enough) or `explore` (a deliberate try of a cheaper model, so the table keeps learning).
+That is the model, who pays for it (the user's Claude plan), the effort, the prompt's category, and the reason for the choice, which is one of:
+
+- `default`: where this kind of work starts.
+- `proven`: the cheapest model the record shows is good enough.
+- `explore`: a deliberate try of a cheaper model, so the table keeps learning.
 
 ## 2. Architecture
 
@@ -50,11 +54,41 @@ The examples are real. They come from Compare #37, which ran 20 SWE-Bench Pro ta
 
 ### 3.1 Candidates and tiers
 
-GATE routes only among models the user can call right now: local models, models on AURA's router when signed in, and Claude or ChatGPT models when those plans are linked. A model reachable two ways is kept once, on the user's plan, since that is already paid for. Each model has a tier: `local`, `fast` (Haiku, GPT mini), `standard` (Sonnet) or `frontier` (Opus, GPT-5). Tiers set where work starts and what "stronger" means when it moves up.
+GATE routes only among models the user can call right now:
+
+- Local models.
+- Models on AURA's router, when signed in.
+- Claude or ChatGPT models, when those plans are linked.
+
+A model reachable two ways is kept once, on the user's plan, since that is already paid for. Each model has a tier:
+
+- `local`: models running on the user's machine.
+- `fast`: Haiku, GPT mini.
+- `standard`: Sonnet.
+- `frontier`: Opus, GPT-5.
+
+Tiers set where work starts and what "stronger" means when it moves up.
 
 ### 3.2 Classify
 
-One short call to the cheapest fast model labels the prompt with a category (`question`, `small_change`, `multi_file_change`, `debugging`, `research`, `planning`, `writing`, `other`) and a difficulty (`easy`, `medium`, `hard`). It answers through a `label` tool, not prose: given a long SWE-Bench prompt ("Your task is to implement…") as plain text, a cheap model tends to start doing the work. A call that fails or takes over 20 seconds leaves the prompt `unclassified`.
+One short call to the cheapest fast model labels the prompt with a category:
+
+- `question`
+- `small_change`
+- `multi_file_change`
+- `debugging`
+- `research`
+- `planning`
+- `writing`
+- `other`
+
+and a difficulty:
+
+- `easy`
+- `medium`
+- `hard`
+
+It answers through a `label` tool, not prose: given a long SWE-Bench prompt ("Your task is to implement…") as plain text, a cheap model tends to start doing the work. A call that fails or takes over 20 seconds leaves the prompt `unclassified`.
 
 In #37, Haiku 5.5 made 20 calls of one to four seconds, $0.008 in total. It labelled 15 tasks `multi_file_change`, 4 `small_change` and 1 `debugging`, all of them `hard`. The classifier does not route. It only picks which row of the table to read.
 
@@ -66,7 +100,13 @@ The table has a row per level (turn or subtask), category and model, holding tri
 - **Early rule-out.** A fast-tier model is dropped as soon as it can no longer reach the target over its first 10 tries (`Row::can_still_reach`). Two failures in its first two tries is enough. A standard-tier model hands its work up only when starting on it has also become dearer than starting on the next tier: when a turn on it costs at least what a turn on the stronger model does, times the share of its turns that succeed.
 - **Exploration.** With probability `AURA_GATE_EXPLORE` (5%), a turn tries a cheaper model that has not been ruled out, and logs the choice with its probability so the outcome can be weighed fairly. This is the logged-propensity idea from contextual bandits.[1](https://arxiv.org/abs/1003.0146) Comparisons switch exploration off, so a benchmark measures the policy, not its experiments.
 
-Effort follows difficulty: `low`, `medium` or `high`, never `max` to start. A route recorded in #37:
+Effort follows difficulty, and never starts at `max`:
+
+- `easy` work runs at `low` effort.
+- `medium` work runs at `medium` effort.
+- `hard` work runs at `high` effort.
+
+A route recorded in #37:
 
 ```json
 {"category": "debugging", "difficulty": "hard", "model": "claude/claude-sonnet-5-5", "effort": "high", "explored": false}
@@ -74,7 +114,13 @@ Effort follows difficulty: `low`, `medium` or `high`, never `max` to start. A ro
 
 ### 3.4 Define done
 
-Before a code turn, a standard-tier model turns the request into acceptance criteria, each marked as a behaviour, an interface or an exact output. For an Element task in #37 (bulk sign-out of devices), Sonnet wrote 12, including:
+Before a code turn, a standard-tier model turns the request into acceptance criteria. Each is marked as one of:
+
+- A behaviour.
+- An interface.
+- An exact output.
+
+For an Element task in #37 (bulk sign-out of devices), Sonnet wrote 12, including:
 
 > The bulk sign-out action has `data-testid="sign-out-selection-cta"`.
 >
@@ -88,16 +134,29 @@ The turn runs in the normal agent loop on the chosen model. Work that can be spl
 
 ### 3.6 Verify
 
-This is where a router that checks results earns its savings. A code turn ends in one of four signals: an error, `checks_failed`, `checks_passed`, or nothing to go on. Telling which is harder than it sounds.
+This is where a router that checks results earns its savings. A code turn ends in one of four signals:
 
-- **Find the check.** GATE takes the turn's last test or build command, including wrapped ones such as `sh .swe/run 'go test ./internal/config/...'`. When the exit status may belong to another command (`pytest | grep Error` that matched nothing), the output decides: `12 passed` passes, failures fail, and anything else says nothing. A test run with the change stashed tested the old code, so it does not count.
+- An error.
+- `checks_failed`: its last test or build failed.
+- `checks_passed`: its last test or build passed.
+- Nothing to go on: it ran no test or build.
+
+Telling which is harder than it sounds.
+
+- **Find the check.** GATE takes the turn's last test or build command, including wrapped ones such as `sh .swe/run 'go test ./internal/config/...'`. A test run with the change stashed tested the old code, so it does not count. When the exit status may belong to another command (`pytest | grep Error` that matched nothing), the output decides:
+  - Output such as `12 passed` passes the check.
+  - Output showing failures fails it.
+  - Anything else says nothing.
 - **Follow up on unchecked work.** A code turn that ran no test or build is asked once to run the tests covering its change and restate its answer. If it still does not, the harness runs the project's own test command. If nothing can run, a judge reads the request, the diff, the commands and the reply, and rules whether the work is done.
 - **Distrust weak passes.** A reply admitting the work was not verified ("I couldn't build against the real ECR module here because it isn't in the offline container", from a flipt task in #37) goes to the judge despite passing tests. So do tests that ran only files the attempt wrote itself. Each such sign is logged against what later proved the attempt right or wrong, and triggers a review only once the log shows it means something.
 - **Keep reviews logged.** Replayed over logged benchmark attempts, an Opus reviewer given the criteria called 6 of 8 wrong attempts unfinished, but also 16 of 35 right ones. Acting on it would send back about two good attempts for every bad one, so reviews stay logged only, on a quarter of turns. In #37 the Element review found 11 of 12 criteria met and one untested. The task passed its hidden tests.
 
 ### 3.7 Judge: whose fault?
 
-A failed check is not yet a reason to pay for a stronger model. Tests fail because of the environment, because they were already failing, or because the request cannot be done. So the judge answers one narrow question: not "is this correct?" but "was the model at fault?". `judged_fail` counts against the model and moves the work up. `judged_excused` counts for nothing and leaves the work where it is.
+A failed check is not yet a reason to pay for a stronger model. Tests fail because of the environment, because they were already failing, or because the request cannot be done. So the judge answers one narrow question: not "is this correct?" but "was the model at fault?". Its verdict is one of:
+
+- `judged_fail`: counts against the model and moves the work up.
+- `judged_excused`: counts for nothing and leaves the work where it is.
 
 - **Failed checks** are judged by the strongest Opus available, since that verdict decides whether to pay for Opus. It is never asked about work on its own tier.
 - **Unchecked work** on a standard model or stronger is judged by the model that did it. Opus costs twice what Sonnet does per token,[2](https://platform.claude.com/docs/en/about-claude/pricing) so judging Sonnet's work on Opus can cost more than the work itself.
