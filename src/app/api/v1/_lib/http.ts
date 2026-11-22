@@ -79,7 +79,9 @@ export async function handle(label: string, run: () => Promise<Response>): Promi
 
 /** Expires this site's cached pages after a write, so the workspace shows it straight away. */
 export function postsChanged(): void {
-  revalidateTag(POSTS_TAG);
+  // `{ expire: 0 }` keeps the pre-Next-16 single-arg behavior (no stale reads);
+  // updateTag isn't available in Route Handlers.
+  revalidateTag(POSTS_TAG, { expire: 0 });
 }
 
 export function postJson(post: Post, { withBody = true, sources }: { withBody?: boolean; sources?: PostSource[] } = {}) {
