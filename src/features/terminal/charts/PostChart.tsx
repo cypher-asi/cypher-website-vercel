@@ -710,7 +710,7 @@ const OPUS_ARM = 'Opus 5.5 alone';
 function GateArchitecture(): ReactElement {
   return (
     <Figure
-      title="How Gate handles one turn"
+      title="How GATE handles one turn"
       subtitle="Seven stages, a loop that learns from every outcome, and three layers that keep the decisions pure and replayable."
       sources={[]}
     >
@@ -812,18 +812,18 @@ function GateSavings(): ReactElement {
     },
     {
       id: `${group}-gate`,
-      label: 'Gate',
+      label: 'GATE',
       detail: group === 'Cost' ? `${Math.round(saved * 100)}% less` : undefined,
       value: gateValue,
       shown: shown(gateValue),
       accent: true,
-      tip: { title: `Gate: ${group.toLowerCase()}`, rows: rows(true) },
+      tip: { title: `GATE: ${group.toLowerCase()}`, rows: rows(true) },
     },
   ];
   return (
     <Figure
-      title={`Gate against Opus 5.5 alone on ${HEAD.pairs} SWE-Bench Pro hard tasks`}
-      subtitle={`Compare #${HEAD.compare}: each task once on each arm, graded by the task's hidden tests. List-price USD, Gate's own calls included.`}
+      title={`GATE against Opus 5.5 alone on ${HEAD.pairs} SWE-Bench Pro hard tasks`}
+      subtitle={`Compare #${HEAD.compare}: each task once on each arm, graded by the task's hidden tests. List-price USD, GATE's own calls included.`}
       sources={GATE_SOURCES}
     >
       <p className={styles.group}>Cost</p>
@@ -832,7 +832,7 @@ function GateSavings(): ReactElement {
         rows={arm('Cost', gate.cost, opus.cost, (n) => `$${n.toFixed(2)}`, (isGate) => [
           ['Total', `$${(isGate ? gate : opus).cost.toFixed(2)}`],
           ['Per task', `$${((isGate ? gate : opus).cost / HEAD.pairs).toFixed(2)}`],
-          ['Gate ÷ Opus', gateRatio(gate.cost / opus.cost)],
+          ['GATE ÷ Opus', gateRatio(gate.cost / opus.cost)],
         ])}
       />
       <p className={styles.group}>Wall time</p>
@@ -851,7 +851,7 @@ function GateSavings(): ReactElement {
         ])}
       />
       <p className={styles.footnote}>
-        Compare #{second.compare}, an earlier run of the same design on {second.pairs} of these tasks: Gate $
+        Compare #{second.compare}, an earlier run of the same design on {second.pairs} of these tasks: GATE $
         {second.gate.cost.toFixed(2)}, Opus ${second.opus.cost.toFixed(2)}, {second.gate.passed} of {second.pairs}{' '}
         passed on each.
       </p>
@@ -859,18 +859,18 @@ function GateSavings(): ReactElement {
   );
 }
 
-/** Per task, Gate's cost and Opus's cost as two bars on one row. */
+/** Per task, GATE's cost and Opus's cost as two bars on one row. */
 function GateSweTasks(): ReactElement {
   const max = Math.max(...GATE_RESULTS.tasks.flatMap((t) => [t.gate.cost, t.opus.cost]));
   const repos = [...new Set(GATE_RESULTS.tasks.map((t) => t.repo))];
   return (
     <Figure
-      title="Cost of each task, Gate against Opus 5.5 alone"
+      title="Cost of each task, GATE against Opus 5.5 alone"
       subtitle={`Compare #${HEAD.compare}, SWE-Bench Pro hard. Every run on both arms passed the task's hidden tests.`}
       sources={GATE_SOURCES}
     >
       <p className={styles.legend} aria-hidden="true">
-        <span className={styles.swatch} data-accent="" /> Gate
+        <span className={styles.swatch} data-accent="" /> GATE
         <span className={styles.swatch} /> {OPUS_ARM}
       </p>
       {repos.map((repo) => (
@@ -904,11 +904,11 @@ function PairedBars({
             {...target(t.task, {
               title: t.task,
               rows: [
-                ['Gate', `$${t.gate.cost.toFixed(2)} · ${minutes(t.gate.wallMin)}`],
+                ['GATE', `$${t.gate.cost.toFixed(2)} · ${minutes(t.gate.wallMin)}`],
                 [OPUS_ARM, `$${t.opus.cost.toFixed(2)} · ${minutes(t.opus.wallMin)}`],
-                ['Gate ÷ Opus', gateRatio(t.gate.cost / t.opus.cost)],
-                ['Gate ran on', t.gate.route.join(', then ')],
-                ["Gate's own calls", gateUsd(t.gate.ownCalls)],
+                ['GATE ÷ Opus', gateRatio(t.gate.cost / t.opus.cost)],
+                ['GATE ran on', t.gate.route.join(', then ')],
+                ["GATE's own calls", gateUsd(t.gate.ownCalls)],
                 ['Hidden tests', t.gate.passed && t.opus.passed ? 'both passed' : 'see run'],
               ],
               note: t.title,
@@ -958,14 +958,14 @@ function GateSpend(): ReactElement {
       rows: [
         ['Cost', gateUsd(spend[key])],
         ['Calls', String(calls[key])],
-        ['Share of Gate', `${((spend[key] / total) * 100).toFixed(1)}%`],
+        ['Share of GATE', `${((spend[key] / total) * 100).toFixed(1)}%`],
       ],
       note,
     },
   });
   return (
     <Figure
-      title={`Where Gate's $${total.toFixed(2)} went`}
+      title={`Where GATE's $${total.toFixed(2)} went`}
       subtitle={`Compare #${HEAD.compare}, ${HEAD.pairs} tasks, priced per call from recorded token usage.`}
       sources={GATE_SOURCES}
     >
@@ -973,11 +973,11 @@ function GateSpend(): ReactElement {
       <Bars
         max={Math.ceil(spend.work)}
         rows={[
-          row('work', 'Work on Sonnet 5.5', 'every task', 'The agent loop on the model Gate picked, at high effort.', true),
+          row('work', 'Work on Sonnet 5.5', 'every task', 'The agent loop on the model GATE picked, at high effort.', true),
           row('escalated', 'Moved up to Opus 5.5', '1 task', 'The one task the judge sent up, finished on Opus.'),
         ]}
       />
-      <p className={styles.group}>Gate&apos;s own calls</p>
+      <p className={styles.group}>GATE&apos;s own calls</p>
       <Bars
         max={Math.ceil(spend.work)}
         rows={[
@@ -987,7 +987,7 @@ function GateSpend(): ReactElement {
         ]}
       />
       <p className={styles.footnote}>
-        Gate&apos;s own calls cost {gateUsd(own)}, {Math.round((own / total) * 100)}% of its total. Opus alone spent $
+        GATE&apos;s own calls cost {gateUsd(own)}, {Math.round((own / total) * 100)}% of its total. Opus alone spent $
         {HEAD.opus.cost.toFixed(2)} on the same tasks.
       </p>
     </Figure>
@@ -999,8 +999,8 @@ function GateIterations(): ReactElement {
   const last = runs[runs.length - 1];
   return (
     <Figure
-      title="Gate's cost against Opus alone, run by run"
-      subtitle={`The same ${GATE_RESULTS.core.length} SWE-Bench Pro tasks in each Compare, from the first design to the current one. Below 1× Gate costs less.`}
+      title="GATE's cost against Opus alone, run by run"
+      subtitle={`The same ${GATE_RESULTS.core.length} SWE-Bench Pro tasks in each Compare, from the first design to the current one. Below 1× GATE costs less.`}
       sources={GATE_SOURCES}
     >
       <Bars
@@ -1015,9 +1015,9 @@ function GateIterations(): ReactElement {
           tip: {
             title: `Compare #${r.compare}, ${r.at}`,
             rows: [
-              ['Gate', `$${r.gate.cost.toFixed(2)} · ${r.gate.passed} of ${r.gate.runs} passed`],
+              ['GATE', `$${r.gate.cost.toFixed(2)} · ${r.gate.passed} of ${r.gate.runs} passed`],
               [OPUS_ARM, `$${r.opus.cost.toFixed(2)} · ${r.opus.passed} of ${r.opus.runs} passed`],
-              ['Gate ÷ Opus', gateRatio(r.ratio)],
+              ['GATE ÷ Opus', gateRatio(r.ratio)],
             ],
             note: r.found,
             list: { heading: 'Changed before this run', items: [r.before] },
@@ -1025,8 +1025,8 @@ function GateIterations(): ReactElement {
         }))}
       />
       <p className={styles.footnote}>
-        Tasks: {GATE_RESULTS.core.join(', ')}. Runs before #33 predate the logging of Gate&apos;s own calls, so their
-        Gate cost leaves out the classifier and judge.
+        Tasks: {GATE_RESULTS.core.join(', ')}. Runs before #33 predate the logging of GATE&apos;s own calls, so their
+        GATE cost leaves out the classifier and judge.
       </p>
     </Figure>
   );

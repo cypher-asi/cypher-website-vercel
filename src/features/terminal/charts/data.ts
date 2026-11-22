@@ -337,7 +337,7 @@ export const GATE_FLOW: { stages: GateStage[]; learn: string; layers: { name: st
       module: 'checks.rs · followup.rs · evidence.rs',
       points: [
         'Did the last test or build pass, by its exit status and its output?',
-        'Work that checked nothing is asked to check, or tested by Gate',
+        'Work that checked nothing is asked to check, or tested by GATE',
         'Signs of a weak pass: tests only of its own, a reply that disowns it',
       ],
     },
