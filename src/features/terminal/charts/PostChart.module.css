@@ -562,3 +562,242 @@ figure.figure {
     animation: none;
   }
 }
+
+/* Gate: a turn's stages left to right, a learning loop under them, then the layers. */
+
+.flow {
+  --flow-gap: 10px;
+  margin-top: 18px;
+  container-type: inline-size;
+}
+
+.figure .stages {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--flow-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.figure .stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 92px;
+  margin: 0;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-inset);
+}
+
+.figure .stage[data-accent] {
+  border-color: var(--color-accent);
+}
+
+/* An arrow in the gap before every stage but the first. */
+.figure .stage + .stage::before {
+  position: absolute;
+  top: 50%;
+  left: calc(-1 * var(--flow-gap) - 1px);
+  width: var(--flow-gap);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  line-height: 1;
+  text-align: center;
+  transform: translateY(-50%);
+  content: "›";
+}
+
+.stageNo {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+}
+
+.stage[data-accent] .stageNo {
+  color: var(--color-accent);
+}
+
+.stageName {
+  margin-top: 6px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  overflow-wrap: normal;
+}
+
+.stageDoes {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  overflow-wrap: normal;
+}
+
+/* The loop runs under stages 2 to 7 and points back up at Pick. */
+.loop {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: var(--flow-gap) 0 0 calc((100% - 6 * var(--flow-gap)) / 7 + var(--flow-gap));
+  padding: 8px 12px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-inset);
+}
+
+.loopArrow {
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  line-height: 1;
+}
+
+.loopLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.loopText {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+.figure .layers {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.figure .layer {
+  display: grid;
+  grid-template-columns: 5rem 11rem minmax(0, 1fr);
+  align-items: baseline;
+  gap: 4px 14px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: var(--radius-inset);
+  background: var(--color-overlay-subtle);
+}
+
+.layerName {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.layerCrate {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.layerHolds {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+/* Sized by the chart's own width, since the reader is a narrow middle panel on wide screens. */
+@container (max-width: 760px) {
+  .figure .stages {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .figure .stage {
+    min-height: 0;
+  }
+
+  .figure .stage + .stage::before {
+    content: none;
+  }
+
+  .loop {
+    margin-left: 0;
+  }
+
+  .figure .layer {
+    grid-template-columns: 5rem minmax(0, 1fr);
+  }
+
+  .figure .layerHolds {
+    grid-column: 1 / -1;
+  }
+}
+
+@container (max-width: 460px) {
+  .figure .stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .figure .layer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.figure .stage,
+.figure .layer,
+.loop {
+  cursor: default;
+  outline: none;
+  transition: opacity var(--duration-base) ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.figure .stage:focus-visible,
+.figure .layer:focus-visible,
+.loop:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 3px;
+}
+
+.flow[data-has-active] :is(.stage, .layer, .loop):not([data-active]) {
+  opacity: 0.35;
+}
+
+/* Gate: two bars per row, Gate's on top in the accent. */
+
+.figure .legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--color-text-primary);
+}
+
+.swatch + .swatch,
+.legend > .swatch:not(:first-child) {
+  margin-left: 12px;
+}
+
+.swatch[data-accent] {
+  background: var(--color-accent);
+}
+
+.pair {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pair > .track {
+  height: 7px;
+}
+
+.rowValueSub {
+  display: block;
+  color: var(--color-text-tertiary);
+}
+
+/* Dimming comes from the shared .bar and .rowValue rule, so the pair's bars and sub-values dim once. */

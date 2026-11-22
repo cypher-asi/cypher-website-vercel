@@ -255,3 +255,134 @@ export const ROADMAP = [
     ],
   },
 ];
+
+/* Gate, the router behind Aura's `gate` model id. Results are in gate-data.ts. */
+
+const GATE_SRC = {
+  sweBenchPro: { label: 'SWE-Bench Pro HARD-51', href: 'https://github.com/scaleapi/SWE-bench_Pro-os' },
+  claudePricing: { label: 'Claude list prices', href: 'https://platform.claude.com/docs/en/about-claude/pricing' },
+} satisfies Record<string, Source>;
+
+export const GATE_SOURCES = [GATE_SRC.sweBenchPro, GATE_SRC.claudePricing];
+
+/** One stage of a turn under Gate, in the order a turn meets them. */
+export interface GateStage {
+  id: string;
+  name: string;
+  /** What the stage does, in a few words, shown under its name. */
+  does: string;
+  /** Where it lives in aura-harness. */
+  module: string;
+  /** The model it ran on in Compare #37. */
+  ranOn?: string;
+  /** Its key in GATE_RESULTS.spend and .calls, for what it cost in Compare #37. */
+  spend?: 'gate:classify' | 'gate:criteria' | 'gate:judge' | 'work' | 'escalated';
+  points: string[];
+}
+
+export const GATE_FLOW: { stages: GateStage[]; learn: string; layers: { name: string; crate: string; holds: string }[] } = {
+  stages: [
+    {
+      id: 'classify',
+      name: 'Classify',
+      does: 'Label the work',
+      module: 'classify.rs',
+      ranOn: 'Haiku 5.5',
+      spend: 'gate:classify',
+      points: [
+        'One call to the cheapest fast model you can use',
+        'One of 8 categories, and easy, medium or hard',
+        'Answers through a label tool, with a 20 second limit',
+      ],
+    },
+    {
+      id: 'pick',
+      name: 'Pick',
+      does: 'Choose model and effort',
+      module: 'router.rs',
+      points: [
+        'The cheapest model proven on this kind of work',
+        'Otherwise the start tier: fast for easy work, standard for the rest',
+        'Effort from difficulty: low, medium or high, never max to start',
+      ],
+    },
+    {
+      id: 'criteria',
+      name: 'Criteria',
+      does: 'Write down what done means',
+      module: 'criteria.rs',
+      ranOn: 'Sonnet 5.5',
+      spend: 'gate:criteria',
+      points: [
+        'Acceptance criteria for code turns, written before the work starts',
+        'Shown to the worker; reviews check the work against them',
+      ],
+    },
+    {
+      id: 'work',
+      name: 'Work',
+      does: 'Run the turn',
+      module: 'aura-app event loop',
+      ranOn: 'Sonnet 5.5',
+      spend: 'work',
+      points: [
+        'The agent loop on the picked model, with its usual tools',
+        'Large changes and planning are led: the lead hands edits to subtasks',
+      ],
+    },
+    {
+      id: 'verify',
+      name: 'Verify',
+      does: 'Read the evidence',
+      module: 'checks.rs · followup.rs · evidence.rs',
+      points: [
+        'Did the last test or build pass, by its exit status and its output?',
+        'Work that checked nothing is asked to check, or tested by Gate',
+        'Signs of a weak pass: tests only of its own, a reply that disowns it',
+      ],
+    },
+    {
+      id: 'judge',
+      name: 'Judge',
+      does: 'Decide whose fault',
+      module: 'turn_judge.rs',
+      ranOn: 'Opus 5.5 for failed checks, Sonnet 5.5 for the rest',
+      spend: 'gate:judge',
+      points: [
+        'Only when the work failed or nothing vouched for it',
+        'Model at fault: the work moves up. Excused: it stands',
+      ],
+    },
+    {
+      id: 'escalate',
+      name: 'Escalate',
+      does: 'Move up a tier',
+      module: 'router::escalate',
+      ranOn: 'Opus 5.5',
+      spend: 'escalated',
+      points: [
+        'Same conversation, files as the work left them, with the findings',
+        'More effort only on the strongest model, and only after a judged failure',
+      ],
+    },
+  ],
+  learn:
+    'Every prompt and outcome is a transaction in the record. The table of what each model has proven per kind of work is a fold over it, updated before the next pick.',
+  layers: [
+    {
+      name: 'Decide',
+      crate: 'aura-agent-gate',
+      holds: 'Pure functions: candidates, routing, the table, request builders, outcome rules. No I/O.',
+    },
+    {
+      name: 'Run',
+      crate: 'aura-app event loop',
+      holds: 'Sends the classifier and judge calls through the kernel, runs checks, restores files.',
+    },
+    {
+      name: 'Record',
+      crate: 'kernel and record',
+      holds: 'Every call, route and outcome is appended. Replaying it rebuilds the same table.',
+    },
+  ],
+};

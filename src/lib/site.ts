@@ -60,7 +60,7 @@ export const SITE: SiteConfig = {
     { label: 'Mission', href: '/mission' },
   ],
   companies: [
-    { id: 'aura', label: 'AURA', description: 'An agentic coding system', href: 'https://aura.ai' },
+    { id: 'aura', label: 'AURA', description: 'An agentic coding system', href: 'https://aura.ai', siteId: 'aura' },
     { id: 'zode', label: 'ZODE', description: 'A micro-data center', href: 'https://zode.org', siteId: 'zode' },
     { id: 'wilder-world', label: 'Wilder World', description: 'A virtual simulation', href: 'https://wilderworld.com' },
     { id: 'z-chain', label: 'Z Chain', description: 'A blazing-fast blockchain', href: 'https://zchain.org' },
