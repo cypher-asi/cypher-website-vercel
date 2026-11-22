@@ -69,10 +69,7 @@ export async function PATCH(request: Request, ctx: Ctx) {
       post = await updatePost(site, id, draft, editorEmail);
     } catch (error) {
       if (error instanceof SlugTakenError) {
-        return apiError(
-          'slug_taken',
-          `Another ${error.kind === 'news' ? 'news post' : 'changelog entry'} already uses that slug.`,
-        );
+        return apiError('slug_taken', 'Another post already uses that slug. Please try again.');
       }
       throw error;
     }

@@ -81,3 +81,35 @@ export interface PostDraft {
 
 /** The path a post lives at on its own site. */
 export const postPath = (kind: PostKind, slug: string): string => `/${kind}/${slug}`;
+
+/** The path a post lives at on cypher.net. Slugs are unique across every site and kind. */
+export const postHref = (slug: string): string => `/${slug}`;
+
+/**
+ * Top-level paths the app serves itself, so no post may take them as a slug.
+ * Every folder in src/app must be listed here (types.test.ts checks).
+ */
+export const RESERVED_SLUGS: ReadonlySet<string> = new Set([
+  'api',
+  'companies',
+  'contact',
+  'icon',
+  'mission',
+  'papers',
+  'post-media',
+  'privacy',
+  'research',
+  'robots',
+  'sitemap',
+  'styles',
+  'terms',
+  'untitled',
+  'vision',
+  'writing',
+]);
+
+export const isReservedSlug = (slug: string): boolean => RESERVED_SLUGS.has(slug);
+
+/** A slug a post could be served at on cypher.net. */
+export const isPostSlug = (value: string): boolean =>
+  value.length <= MAX_SLUG_LENGTH && SLUG_RE.test(value) && !isReservedSlug(value);

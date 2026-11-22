@@ -24,7 +24,7 @@ export async function Workspace({
 }) {
   const feed = await loadFeed();
   const { rows, open } = selectWriting(feed, company, target);
-  const post: WritingPost | null | 'unavailable' = open ? await loadPost(open.site, open.kind, open.slug) : null;
+  const post: WritingPost | null | 'unavailable' = open ? await loadPost(open.slug) : null;
   const query = company ? `company=${company.id}` : '';
 
   return (

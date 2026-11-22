@@ -149,7 +149,11 @@ try {
   });
   const clash = await call('PATCH', `${sitePosts}/${taken.data.post.id}`, { body: { draft, editorEmail } });
   await call('DELETE', `${sitePosts}/${taken.data.post.id}`);
-  check(clash.status === 409 && clash.data.error?.code === 'slug_taken', 'refuses a slug already in use', clash.data);
+  check(
+    clash.status === 200 && clash.data.post.slug === `${slug}-2`,
+    'saves a second post with a taken slug under the next free one',
+    clash.data,
+  );
 
   const unpublished = await call('POST', `${sitePosts}/${id}/status`, { body: { status: 'draft', editorEmail } });
   check(unpublished.status === 200 && unpublished.data.post.status === 'draft', 'unpublishes the post');

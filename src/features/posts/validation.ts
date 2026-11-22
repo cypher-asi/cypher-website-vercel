@@ -9,6 +9,7 @@ import {
   postBlobPrefix,
   type PostDraft,
 } from './types';
+import { slugify } from './slug';
 
 const text = (value: unknown): string => (typeof value === 'string' ? value.trim() : '');
 
@@ -21,7 +22,8 @@ export function cleanDraft(postId: string, raw: unknown, publishing: boolean): P
   if (!isPostKind(input.kind)) return { error: 'Choose News or Changelog.' };
   const title = text(input.title);
   const summary = text(input.summary);
-  const slug = text(input.slug).toLowerCase();
+  // With no slug given, the post's URL comes from its title.
+  const slug = text(input.slug).toLowerCase() || slugify(title);
   const version = text(input.version);
   const bodyMd = typeof input.bodyMd === 'string' ? input.bodyMd : '';
   const coverPathname =
@@ -31,7 +33,8 @@ export function cleanDraft(postId: string, raw: unknown, publishing: boolean): P
   if (summary.length > MAX_SUMMARY_LENGTH) return { error: 'That summary is too long.' };
   if (version.length > MAX_VERSION_LENGTH) return { error: 'That version is too long.' };
   if (bodyMd.length > MAX_BODY_LENGTH) return { error: 'That post is too long.' };
-  if (!slug || slug.length > MAX_SLUG_LENGTH || !SLUG_RE.test(slug)) {
+  if (!slug) return { error: 'Add a title or a URL slug.' };
+  if (slug.length > MAX_SLUG_LENGTH || !SLUG_RE.test(slug)) {
     return { error: 'The URL slug can only use lowercase letters, numbers and single hyphens.' };
   }
   if (coverPathname && (!coverPathname.startsWith(postBlobPrefix(postId)) || coverPathname.includes('..'))) {

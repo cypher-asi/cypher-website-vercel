@@ -1,6 +1,7 @@
 import 'server-only';
 import { randomBytes } from 'node:crypto';
 import { db } from '@/lib/db';
+import { nextFreeSlug, slugPrefix } from './slug';
 import {
   isUuid,
   postPath,
@@ -13,9 +14,9 @@ import {
   type Site,
 } from './types';
 
-/** Thrown when a save would give a post a slug another post of its site and kind already uses. */
+/** Thrown when a save can't find a free slug, e.g. losing repeated races for it. */
 export class SlugTakenError extends Error {
-  constructor(readonly kind: PostKind) {
+  constructor() {
     super('slug_taken');
   }
 }
@@ -109,12 +110,19 @@ export async function getPost(siteId: string, id: string): Promise<Post | null> 
   return row ? toPost(row) : null;
 }
 
-export async function getPublishedBySlug(siteId: string, kind: PostKind, slug: string): Promise<Post | null> {
+/** The published post served at cypher.net/{slug}, whichever site wrote it. */
+export async function getPublishedBySlug(slug: string): Promise<Post | null> {
   const [row] = await db()`
     select p.*, s.base_url from posts p join sites s on s.id = p.site_id
-    where p.site_id = ${siteId} and p.kind = ${kind} and p.slug = ${slug} and p.status = 'published'
+    where p.slug = ${slug} and p.status = 'published'
   `;
   return row ? toPost(row) : null;
+}
+
+/** A site's published post by its URL on that site, base_url/kind/slug. */
+export async function getPublishedBySiteSlug(siteId: string, kind: PostKind, slug: string): Promise<Post | null> {
+  const post = await getPublishedBySlug(slug);
+  return post && post.site === siteId && post.kind === kind ? post : null;
 }
 
 export interface FeedCursor {
@@ -190,43 +198,75 @@ export async function getPostSources(postId: string): Promise<(PostSource & { ci
    Writes
    --------------------------------------------------------------------------- */
 
-/** An empty draft, with a placeholder slug that the first save replaces. */
-export async function createDraft(siteId: string, kind: PostKind, author: Author): Promise<Post> {
-  const slug = `untitled-${randomBytes(4).toString('hex')}`;
-  const [row] = await db()`
-    with inserted as (
-      insert into posts (site_id, kind, slug, author_user_id, author_name, author_email, updated_by_email)
-      values (${siteId}, ${kind}, ${slug}, ${author.userId}, ${author.name}, ${author.email}, ${author.email})
-      returning *
-    )
-    select inserted.*, s.base_url from inserted join sites s on s.id = inserted.site_id
+/** Saves can race for the same free slug; the unique index settles it and the loser looks again. */
+const SLUG_ATTEMPTS = 3;
+
+/** Slugs other posts use that `base` or its numbered variants could clash with. */
+async function takenSlugs(base: string, exceptId: string | null): Promise<Set<string>> {
+  const rows = await db()`
+    select slug from posts
+    where slug like ${`${slugPrefix(base)}%`} and (${exceptId}::uuid is null or id <> ${exceptId}::uuid)
   `;
-  return toPost(row);
+  return new Set(rows.map((row) => String(row.slug)));
 }
 
+/** `slug` if no other post uses it, otherwise its first free numbered variant. */
+export async function freeSlug(slug: string, exceptId: string | null = null): Promise<string> {
+  return nextFreeSlug(slug, await takenSlugs(slug, exceptId));
+}
+
+/** An empty draft, with a placeholder slug that the first save replaces. */
+export async function createDraft(siteId: string, kind: PostKind, author: Author): Promise<Post> {
+  for (let attempt = 1; ; attempt++) {
+    const slug = `untitled-${randomBytes(4).toString('hex')}`;
+    try {
+      const [row] = await db()`
+        with inserted as (
+          insert into posts (site_id, kind, slug, author_user_id, author_name, author_email, updated_by_email)
+          values (${siteId}, ${kind}, ${slug}, ${author.userId}, ${author.name}, ${author.email}, ${author.email})
+          returning *
+        )
+        select inserted.*, s.base_url from inserted join sites s on s.id = inserted.site_id
+      `;
+      return toPost(row);
+    } catch (error) {
+      if (!isUniqueViolation(error) || attempt >= SLUG_ATTEMPTS) throw error;
+    }
+  }
+}
+
+/**
+ * Saves `draft` over the post. Its slug is kept when no other post uses it,
+ * otherwise the post gets the first free numbered variant (hello-2, ...);
+ * the returned post carries the slug it was saved under.
+ */
 export async function updatePost(siteId: string, id: string, draft: PostDraft, editorEmail: string): Promise<Post | null> {
-  try {
-    const [row] = await db()`
-      with updated as (
-        update posts set
-          kind = ${draft.kind},
-          slug = ${draft.slug},
-          title = ${draft.title},
-          summary = ${draft.summary},
-          body_md = ${draft.bodyMd},
-          version = ${draft.kind === 'changelog' && draft.version ? draft.version : null},
-          cover_pathname = ${draft.coverPathname},
-          updated_at = now(),
-          updated_by_email = ${editorEmail}
-        where site_id = ${siteId} and id = ${id}
-        returning *
-      )
-      select updated.*, s.base_url from updated join sites s on s.id = updated.site_id
-    `;
-    return row ? toPost(row) : null;
-  } catch (error) {
-    if (isUniqueViolation(error)) throw new SlugTakenError(draft.kind);
-    throw error;
+  if (!isUuid(id)) return null;
+  for (let attempt = 1; ; attempt++) {
+    const slug = await freeSlug(draft.slug, id);
+    try {
+      const [row] = await db()`
+        with updated as (
+          update posts set
+            kind = ${draft.kind},
+            slug = ${slug},
+            title = ${draft.title},
+            summary = ${draft.summary},
+            body_md = ${draft.bodyMd},
+            version = ${draft.kind === 'changelog' && draft.version ? draft.version : null},
+            cover_pathname = ${draft.coverPathname},
+            updated_at = now(),
+            updated_by_email = ${editorEmail}
+          where site_id = ${siteId} and id = ${id}
+          returning *
+        )
+        select updated.*, s.base_url from updated join sites s on s.id = updated.site_id
+      `;
+      return row ? toPost(row) : null;
+    } catch (error) {
+      if (!isUniqueViolation(error)) throw error;
+      if (attempt >= SLUG_ATTEMPTS) throw new SlugTakenError();
+    }
   }
 }
 

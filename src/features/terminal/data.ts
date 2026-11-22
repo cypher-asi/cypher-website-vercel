@@ -2,7 +2,7 @@ import 'server-only';
 import { unstable_cache } from 'next/cache';
 import { cache } from 'react';
 import { getPostSources, getPublishedBySlug, listPublishedFeed, publishedCountsBySite } from '@/features/posts/repo';
-import { POSTS_TAG, isPostKind, type Post, type PostSource } from '@/features/posts/types';
+import { POSTS_TAG, postHref, type Post, type PostSource } from '@/features/posts/types';
 
 /** A published post as the Writing panel lists it. Plain data, so it survives the cache. */
 export interface WritingItem {
@@ -27,8 +27,6 @@ export interface WritingPost extends WritingItem {
   sources: WritingSource[];
 }
 
-export const writingHref = (site: string, kind: string, slug: string): string => `/writing/${site}/${kind}/${slug}`;
-
 const toItem = (post: Post): WritingItem => ({
   id: post.id,
   site: post.site,
@@ -38,7 +36,7 @@ const toItem = (post: Post): WritingItem => ({
   summary: post.summary,
   publishedAt: (post.publishedAt ?? post.updatedAt).toISOString(),
   canonicalUrl: post.canonicalUrl,
-  href: writingHref(post.site, post.kind, post.slug),
+  href: postHref(post.slug),
 });
 
 const FEED_LIMIT = 100;
@@ -53,9 +51,8 @@ const cachedFeed = unstable_cache(
 const cachedCounts = unstable_cache(publishedCountsBySite, ['writing-counts'], CACHE);
 
 const cachedPost = unstable_cache(
-  async (site: string, kind: string, slug: string): Promise<WritingPost | null> => {
-    if (!isPostKind(kind)) return null;
-    const post = await getPublishedBySlug(site, kind, slug);
+  async (slug: string): Promise<WritingPost | null> => {
+    const post = await getPublishedBySlug(slug);
     if (!post) return null;
     return {
       ...toItem(post),
@@ -64,7 +61,7 @@ const cachedPost = unstable_cache(
       sources: await getPostSources(post.id),
     };
   },
-  ['writing-post'],
+  ['writing-post-by-slug'],
   CACHE,
 );
 
@@ -90,9 +87,9 @@ export function loadCounts(): Promise<Record<string, number>> {
 
 /** Deduped per request: a post page asks for its post in its metadata, the page and the workspace. */
 export const loadPost = cache(
-  (site: string, kind: string, slug: string): Promise<WritingPost | null | 'unavailable'> =>
-    cachedPost(site, kind, slug).catch((error: unknown) => {
-      console.error(`[writing] failed to load ${site}/${kind}/${slug}`, error);
+  (slug: string): Promise<WritingPost | null | 'unavailable'> =>
+    cachedPost(slug).catch((error: unknown) => {
+      console.error(`[writing] failed to load /${slug}`, error);
       return 'unavailable' as const;
     }),
 );

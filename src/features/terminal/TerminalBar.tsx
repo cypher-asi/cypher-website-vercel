@@ -5,11 +5,14 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { TypewriterText, type TypewriterSegment } from '@/components/TypewriterText';
 import type { SiteLink } from '@/lib/site';
+import { isPostSlug } from '@/features/posts/types';
 import styles from './TerminalBar.module.css';
 
-/** The workspace link stays current while a post is open in it. */
+/** The workspace link stays current while a post (at /{slug}) is open in it. */
 const isActive = (pathname: string, href: string): boolean =>
-  href === '/' ? pathname === '/' || pathname.startsWith('/writing') : pathname === href || pathname.startsWith(`${href}/`);
+  href === '/'
+    ? pathname === '/' || isPostSlug(pathname.slice(1))
+    : pathname === href || pathname.startsWith(`${href}/`);
 
 export function TerminalBar({ wordmark, links }: { wordmark: string; links: SiteLink[] }) {
   const pathname = usePathname() ?? '/';

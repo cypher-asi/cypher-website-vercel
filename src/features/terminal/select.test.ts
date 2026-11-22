@@ -13,7 +13,7 @@ const item = (site: string, slug: string, publishedAt: string): WritingItem => (
   summary: '',
   publishedAt,
   canonicalUrl: `https://${site}.example/news/${slug}`,
-  href: `/writing/${site}/news/${slug}`,
+  href: `/${slug}`,
 });
 
 const feed = [
@@ -22,13 +22,11 @@ const feed = [
   item('zode', 'oldest', '2026-11-01T00:00:00Z'),
 ];
 
-const ref = ({ site, kind, slug }: { site: string; kind: string; slug: string }) => ({ site, kind, slug });
-
 describe('selectWriting', () => {
   it('lists every site and opens the latest post', () => {
     const { rows, open } = selectWriting(feed, null);
     expect(rows.map((row) => row.slug)).toEqual(['latest', 'middle', 'oldest']);
-    expect(open && ref(open)).toEqual({ site: 'zode', kind: 'news', slug: 'latest' });
+    expect(open?.slug).toBe('latest');
   });
 
   it('labels each row with its company', () => {
@@ -43,7 +41,7 @@ describe('selectWriting', () => {
   });
 
   it('opens the target over the latest post, even outside the filter', () => {
-    const target = { site: 'other', kind: 'news', slug: 'middle' };
+    const target = { slug: 'middle' };
     expect(selectWriting(feed, null, target).open).toBe(target);
     expect(selectWriting(feed, companyById('zode'), target).open).toBe(target);
   });

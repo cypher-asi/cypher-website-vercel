@@ -70,6 +70,10 @@ Everything is under `/api/v1`. The contract is [`/api/v1/openapi.json`](src/app/
 
 Send the site key as `Authorization: Bearer <key>`. Errors always look like `{ "error": { "code", "message" } }`, and the messages are written so they can be shown to editors as they are. Public reads are cached at the CDN for a minute. Vercel never caches a request that carries an `Authorization` header, so a site reading with its own key always sees its latest edits.
 
+### Slugs
+
+cypher.net serves every post at `/{slug}`, so a slug belongs to one post across every site and kind (a unique index on `posts.slug`), and never to a top-level page of the app (`RESERVED_SLUGS` in `src/features/posts/types.ts`; a test fails if a folder in `src/app` is missing from it). A save with an empty slug builds one from the title. When the slug is taken, the post is saved under the first free numbered variant (`hello-2`, `hello-3`, ...) and the response carries that slug, so editors should show what comes back. Company sites still serve their posts at `base_url/{kind}/{slug}`, which is what `canonicalUrl` points to.
+
 ### Sources as research
 
 When a post is saved, the API reads the numbered list under its `## Sources` (or Notes, References) heading, which looks like `1. Publisher, [Title](url), detail`. It also picks up inline `[n](url)` citations that have no list entry. Each URL becomes one row in `research_sources`, deduplicated by its normalized URL across every post. `post_sources` records which post cites which source, under which number.
@@ -96,7 +100,7 @@ Hosted on [Vercel](https://vercel.com/). Pushes to `main` deploy to production. 
 | Route | Description |
 |-------|-------------|
 | `/` | Workspace: Research and Companies on the left, the latest post in the center, its sources on the right |
-| `/writing/{site}/{kind}/{slug}` | The workspace with one post open. `?company=` filters Research to one company. |
+| `/{slug}` | The workspace with one post open. `?company=` filters Research to one company. Old `/writing/{site}/{kind}/{slug}` links redirect here. |
 | `/companies` | The company grid and key facts |
 | `/vision` | Mission statement |
 | `/papers` | Papers index (the "papers" link), with papers at `/papers/the-grid`, `/papers/aura-harness`, `/papers/zns` and `/papers/zero-os`. `/research/*` redirects here. |

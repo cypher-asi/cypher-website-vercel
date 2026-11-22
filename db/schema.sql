@@ -38,9 +38,21 @@ create table if not exists posts (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   updated_by_email text,
-  published_at timestamptz,
-  unique (site_id, kind, slug)
+  published_at timestamptz
 );
+
+-- Posts are served at cypher.net/{slug}, so a slug belongs to one post across
+-- every site and kind. Keeps the earliest post's slug and numbers the rest
+-- (a no-op once slugs are unique), then enforces it.
+update posts p set slug = left(p.slug, 90) || '-' || d.n
+from (
+  select id, row_number() over (partition by slug order by published_at nulls last, created_at, id) as n
+  from posts
+) d
+where p.id = d.id and d.n > 1;
+
+create unique index if not exists posts_slug_key on posts (slug);
+alter table posts drop constraint if exists posts_site_id_kind_slug_key;
 
 create index if not exists posts_published_idx on posts (published_at desc) where status = 'published';
 create index if not exists posts_site_idx on posts (site_id, updated_at desc);

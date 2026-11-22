@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MAX_SEARCH_LENGTH, searchSources, type ResearchSource } from '@/features/research';
-import { writingHref } from '@/features/terminal/data';
+import { postHref } from '@/features/posts/types';
 import { Frame } from '@/features/terminal/Frame';
 import { Panel } from '@/features/terminal/Panel';
 import { companyLabelForSite } from '@/lib/site';
@@ -70,7 +70,7 @@ export default async function SourcesIndex({ searchParams }: { searchParams: Sea
                   {source.citedBy.map((post, i) => (
                     <span key={`${post.site}/${post.kind}/${post.slug}`}>
                       {i > 0 && ', '}
-                      <Link href={writingHref(post.site, post.kind, post.slug)}>
+                      <Link href={postHref(post.slug)}>
                         {companyLabelForSite(post.site)}: {post.title}
                       </Link>
                     </span>

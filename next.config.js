@@ -29,6 +29,8 @@ const nextConfig = {
     return [
       { source: '/research', destination: '/papers', permanent: true },
       { source: '/research/:path*', destination: '/papers/:path*', permanent: true },
+      // Posts moved from /writing/{site}/{kind}/{slug} to /{slug}.
+      { source: '/writing/:site/:kind/:slug', destination: '/:slug', permanent: true },
     ];
   },
 };

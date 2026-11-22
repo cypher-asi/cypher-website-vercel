@@ -8,6 +8,7 @@ const repo = vi.hoisted(() => ({
   listSitePosts: vi.fn(),
   getPost: vi.fn(),
   getPublishedBySlug: vi.fn(),
+  getPublishedBySiteSlug: vi.fn(),
   getPostSources: vi.fn(),
   createDraft: vi.fn(),
   updatePost: vi.fn(),
@@ -167,8 +168,8 @@ describe('PATCH /sites/:site/posts/:id', () => {
     expect((await res.json()).error.message).toMatch(/slug/);
   });
 
-  it('maps a slug clash to 409', async () => {
-    repo.updatePost.mockRejectedValue(new SlugTakenError('news'));
+  it('maps losing every race for a slug to 409', async () => {
+    repo.updatePost.mockRejectedValue(new SlugTakenError());
     const res = await one.PATCH(
       request('PATCH', `/api/v1/sites/zode/posts/${ID}`, { key: ZODE_KEY, body: { draft, editorEmail: 'n@zero.tech' } }),
       postCtx,
@@ -176,8 +177,30 @@ describe('PATCH /sites/:site/posts/:id', () => {
     expect(res.status).toBe(409);
     expect((await res.json()).error).toEqual({
       code: 'slug_taken',
-      message: 'Another news post already uses that slug.',
+      message: 'Another post already uses that slug. Please try again.',
     });
+  });
+
+  it('returns the numbered slug the post was saved under when its slug was taken', async () => {
+    repo.updatePost.mockResolvedValue(post({ slug: 'hello-2' }));
+    const res = await one.PATCH(
+      request('PATCH', `/api/v1/sites/zode/posts/${ID}`, { key: ZODE_KEY, body: { draft, editorEmail: 'n@zero.tech' } }),
+      postCtx,
+    );
+    expect(res.status).toBe(200);
+    expect((await res.json()).post.slug).toBe('hello-2');
+  });
+
+  it('builds the slug from the title when none is sent', async () => {
+    repo.updatePost.mockResolvedValue(post());
+    await one.PATCH(
+      request('PATCH', `/api/v1/sites/zode/posts/${ID}`, {
+        key: ZODE_KEY,
+        body: { draft: { ...draft, slug: '', title: 'Hello, World!' }, editorEmail: 'n@zero.tech' },
+      }),
+      postCtx,
+    );
+    expect(repo.updatePost).toHaveBeenCalledWith('zode', ID, expect.objectContaining({ slug: 'hello-world' }), 'n@zero.tech');
   });
 
   it('404s for a post of another site', async () => {

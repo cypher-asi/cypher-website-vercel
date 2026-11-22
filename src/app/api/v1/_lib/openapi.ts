@@ -101,10 +101,18 @@ export const OPENAPI = {
       },
       PostDraft: {
         type: 'object',
-        required: ['kind', 'slug'],
+        required: ['kind'],
         properties: {
           kind: { type: 'string', enum: ['news', 'changelog'] },
-          slug: { type: 'string', pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$', maxLength: 96 },
+          slug: {
+            type: 'string',
+            pattern: '^[a-z0-9]+(?:-[a-z0-9]+)*$',
+            maxLength: 96,
+            description:
+              'Unique across every site and kind, since posts are served at cypher.net/{slug}. Built from the title ' +
+              'when empty. When another post (or a page of cypher.net) already uses it, the post is saved under the ' +
+              'first free numbered variant (hello-2, hello-3, ...); the response carries the slug it was saved under.',
+          },
           title: { type: 'string', maxLength: 160 },
           summary: { type: 'string', maxLength: 320 },
           bodyMd: { type: 'string', maxLength: 200000 },
@@ -232,7 +240,7 @@ export const OPENAPI = {
           401: errorResponse('No valid key'),
           403: errorResponse('Another site\'s key'),
           404: errorResponse('No such post'),
-          409: errorResponse('Another post of the same kind already uses the slug'),
+          409: errorResponse('A free slug could not be claimed after several tries; save again'),
         },
       },
       delete: {

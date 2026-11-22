@@ -2,7 +2,7 @@ import { companyLabelForSite, type Company } from '@/lib/site';
 import type { WritingItem } from './data';
 
 export type WritingRow = WritingItem & { company: string };
-export type PostRef = Pick<WritingItem, 'site' | 'kind' | 'slug'>;
+export type PostRef = Pick<WritingItem, 'slug'>;
 
 /**
  * The Writing rows to list, `company`'s posts when one is chosen, and the post
