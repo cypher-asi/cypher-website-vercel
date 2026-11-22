@@ -1,7 +1,7 @@
 ---
 title: "Introducing the GATE Router"
 slug: gate-router-design
-summary: GATE starts each turn on the cheapest model proven for the job, checks the result, and escalates only when the model is at fault. On 16 hard SWE-Bench Pro tasks it matched Opus 5.5 at 49% of the cost.
+summary: GATE starts each turn on the cheapest model proven for the job, checks the result, and escalates only when the model is at fault. On 20 hard SWE-Bench Pro tasks it matched Opus 5.5 at 52% of the cost.
 ---
 
 ## Introduction
@@ -13,12 +13,12 @@ GATE is the router behind AURA's `gate` model id. Most routers pick a model once
 - **Escalate only on fault.** When a check fails, a judge decides whether the model or the environment is to blame. Only a model's fault moves the work to a stronger tier.
 - **Learn without training.** The routing table is a fold over AURA's append-only record. Replaying the record rebuilds the same table.
 
-Initial results, on 16 tasks from the HARD-51 subset of SWE-Bench Pro, each run once on GATE and once on Claude Opus 5.5 alone:
+Initial results, on 20 tasks from the HARD-51 subset of SWE-Bench Pro, each run once on GATE and once on Claude Opus 5.5 alone:
 
-- **Same pass rate.** Both arms passed all 16 hidden test suites.
-- **51% cheaper.** $6.54 against $13.23, including GATE's own classifier, criteria, judge and review calls.
-- **13% faster.** 90 minutes of wall time against 103.
-- **Cheaper on 15 of 16 tasks,** at 0.26× to 0.65× of Opus's cost per task.
+- **Same pass rate.** Both arms passed all 20 hidden test suites.
+- **48% cheaper.** $8.40 against $16.20, including GATE's own classifier, criteria, judge and review calls.
+- **13% faster.** 111 minutes of wall time against 128.
+- **Cheaper on 19 of 20 tasks,** at 0.26× to 0.88× of Opus's cost per task.
 - **Hard won.** It took seven comparisons to get here, and in three of the first five GATE cost more than Opus.
 
 ## 1. The idea
@@ -47,7 +47,7 @@ GATE has three layers with strict boundaries:
 
 ## 3. Walking through a turn
 
-The examples are real. They come from Compare #37, which ran SWE-Bench Pro tasks once on GATE and once on Opus 5.5 alone, in isolated copies of each repository. Figures cover the first 16 tasks to finish on both arms.
+The examples are real. They come from Compare #37, which ran 20 SWE-Bench Pro tasks once on GATE and once on Opus 5.5 alone, in isolated copies of each repository.
 
 ### 3.1 Candidates and tiers
 
@@ -57,7 +57,7 @@ GATE routes only among models the user can call right now: local models, models 
 
 One short call to the cheapest fast model labels the prompt with a category (`question`, `small_change`, `multi_file_change`, `debugging`, `research`, `planning`, `writing`, `other`) and a difficulty (`easy`, `medium`, `hard`). It answers through a `label` tool, not prose: given a long SWE-Bench prompt ("Your task is to implement…") as plain text, a cheap model tends to start doing the work. A call that fails or takes over 20 seconds leaves the prompt `unclassified`.
 
-In #37, Haiku 5.5 made 16 calls of two to four seconds, $0.006 in total. It labelled 11 tasks `multi_file_change`, 4 `small_change` and 1 `debugging`, all of them `hard`. The classifier does not route. It only picks which row of the table to read.
+In #37, Haiku 5.5 made 20 calls of one to four seconds, $0.008 in total. It labelled 15 tasks `multi_file_change`, 4 `small_change` and 1 `debugging`, all of them `hard`. The classifier does not route. It only picks which row of the table to read.
 
 ### 3.3 Pick a model and an effort
 
@@ -81,7 +81,7 @@ Before a code turn, a standard-tier model turns the request into acceptance crit
 >
 > When the active device filter changes, all selected devices are cleared.
 
-The worker sees the criteria after the prompt, and reviews check the work against them one by one. Those reviews are still logged only (`AURA_GATE_CRITERIA=log`, see 3.6). Criteria cost $0.33 across #37, 5% of GATE's spend.
+The worker sees the criteria after the prompt, and reviews check the work against them one by one. Those reviews are still logged only (`AURA_GATE_CRITERIA=log`, see 3.6). Criteria cost $0.41 across #37, 5% of GATE's spend.
 
 ### 3.5 Work, alone or as a lead
 
@@ -104,15 +104,15 @@ A failed check is not yet a reason to pay for a stronger model. Tests fail becau
 - **Unchecked work** on a standard model or stronger is judged by the model that did it. Opus costs twice what Sonnet does per token,[2](https://platform.claude.com/docs/en/about-claude/pricing) and judging Sonnet's work on Opus had come to cost more than the work.
 - **A clean run** pays for no judge at all.
 
-In #37 four Sonnet turns ended with their own tests failing. The Opus judge excused all four, none moved up, and all four passed the hidden tests. One turn ended with nothing checked, and Sonnet's judge found a real bug:
+In #37 six Sonnet turns ended with their own tests failing. The Opus judge excused all six, none moved up, and all six passed the hidden tests. One turn ended with nothing checked, and Sonnet's judge found a real bug:
 
 > An empty string, a bare unit such as `MB`, or a lone `.` still passes the new regex, because the number part can be empty. Those inputs then fail at `float()` with `can't interpret following number`, not the required `can't interpret following string`.
 
-Judging and reviewing across the 16 tasks cost $0.64 over 13 calls.
+Judging and reviewing across the 20 tasks cost $0.82 over 16 calls.
 
 ### 3.8 Escalate
 
-Blamed work continues in the same conversation, with the files as the failed attempt left them, on the cheapest model of the next tier up. Its first message carries the judge's findings, as in Reflexion,[3](https://arxiv.org/abs/2303.11366) and tells it that it is a stronger model taking over. The task above moved from Sonnet to Opus at high effort, fixed the regex, and passed. It cost $0.35 on GATE against $0.30 on Opus alone, the only one of the 16 where GATE cost more.
+Blamed work continues in the same conversation, with the files as the failed attempt left them, on the cheapest model of the next tier up. Its first message carries the judge's findings, as in Reflexion,[3](https://arxiv.org/abs/2303.11366) and tells it that it is a stronger model taking over. The task above moved from Sonnet to Opus at high effort, fixed the regex, and passed. It cost $0.35 on GATE against $0.30 on Opus alone, the only one of the 20 where GATE cost more.
 
 Each escalation buys a full pass on a dearer model, so it has to be rare:
 
@@ -147,13 +147,13 @@ A comparison (`/compare` in AURA) runs each task once per arm, in its own git wo
 gate-savings
 ```
 
-Both arms passed all 16 tasks. GATE cost 51% less and took 13% less wall time. It was cheaper on 15 of the 16 tasks, at 0.26× to 0.65× of Opus's cost per task.
+Both arms passed all 20 tasks. GATE cost 48% less and took 13% less wall time. It was cheaper on 19 of the 20 tasks, at 0.26× to 0.88× of Opus's cost per task.
 
 ```chart
 gate-swe-tasks
 ```
 
-Every task started on Sonnet 5.5 at high effort, because the classifier rated all of them hard and no model was proven on hard work yet. Eleven ended with their own tests passing, four with failing tests the judge excused, and one moved up to Opus. So in #37, GATE's saving is close to the per-token price gap between Sonnet and Opus. What the router adds is knowing when Sonnet's work can stand. Here is what knowing cost:
+Every task started on Sonnet 5.5 at high effort, because the classifier rated all of them hard and no model was proven on hard work yet. Thirteen ended with their own tests passing, six with failing tests the judge excused, and one moved up to Opus. So in #37, GATE's saving is close to the per-token price gap between Sonnet and Opus. What the router adds is knowing when Sonnet's work can stand. Here is what knowing cost:
 
 ```chart
 gate-spend
@@ -180,12 +180,11 @@ The first four runs in the chart predate the logging of GATE's own calls, so the
 
 ## 5. Threats to validity
 
-- **Small samples.** #37 is 16 tasks run once per arm, and the iteration chart rests on 4. The Opus arm's cost on those 4 ranged from $2.00 to $3.09 between comparisons. A 51% saving on 16 tasks is a result, not a constant.
+- **Small samples.** #37 is 20 tasks run once per arm, and the iteration chart rests on 4. The Opus arm's cost on those 4 ranged from $2.00 to $3.09 between comparisons. A 48% saving on 20 tasks is a result, not a constant.
 - **A pass-rate ceiling.** Both arms passed every task, so #37 cannot show GATE keeping quality on work Opus can do and Sonnet cannot, only that it lost none. In earlier comparisons GATE failed one task that Opus passed, so the risk is real.
 - **One provider.** Every model was a Claude model on one plan (Haiku, Sonnet, Opus). Other providers have different price gaps and different cheap-tier failure modes.
 - **List prices, not plan usage.** On a subscription, what matters is the share of the plan's usage window a run consumes. AURA's comparison view reports that too. This post uses list prices because readers can check them.
 - **A moving target.** This describes GATE as of Nov 22, 2026. #37 ran on commit `d07d3e3a`. The changes committed after it (`af4874a5`) are not yet measured on these tasks: when a standard model keeps its work, a second pass on the strongest model only after a judge's finding, ignoring test runs made with the change stashed, and showing the worker its criteria.
-- **A run still in progress.** #37 kept running after the snapshot used here (Nov 22, 02:19). By publication, 20 pairs had finished: both arms passed all 20, and GATE cost $8.40 against $16.20, 48% less. The figures and walkthrough keep to the first 16.
 - **Hidden tests are not all of quality.** AURA's comparisons also run a blind judge over both arms' diffs and replies. That verdict for #37 is not reported here.
 
 The next evaluation is GATE against other routers on the same tasks, using public router leaderboards that report cost per task[7](https://openrouter.ai/benchmarks/routers) and step-level benchmarks such as TwinRouterBench.[8](https://arxiv.org/abs/2605.18859)
@@ -195,7 +194,7 @@ The next evaluation is GATE against other routers on the same tasks, using publi
 - **Classifier mistakes cost twice.** A hard task labelled easy starts on the fast tier, and since fast models' own tests pass on work they got wrong, the mistake may never surface. Starting all work that is not easy on the standard tier limits the damage, at the price of rarely using the fast tier for code.
 - **Turns with nothing to go on teach nothing.** They count for their cost only.
 - **Thresholds are global.** The 85% target and 10 tries apply to every category, and nothing decays, so a model that improves or regresses is noticed only as fast as new outcomes outweigh old ones.
-- **The judge is a model too.** Its excusals in #37 were right four times out of four, but every verdict should be checked against what later proved the work right or wrong. That is what GATE's attempt log and its `aura gate eval` report are for.
+- **The judge is a model too.** Its excusals in #37 were right six times out of six, but every verdict should be checked against what later proved the work right or wrong. That is what GATE's attempt log and its `aura gate eval` report are for.
 
 GATE saves money by letting a cheaper model's work stand, and loses it by misreading the evidence and paying a stronger model to redo work that was already right. The work ahead is making the evidence cheaper to read and harder to misread.
 

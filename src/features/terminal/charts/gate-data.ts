@@ -7,18 +7,18 @@
 export const GATE_RESULTS = {
   "headline": {
     "compare": 37,
-    "pairs": 16,
+    "pairs": 20,
     "gate": {
-      "cost": 6.54,
-      "wallMin": 90,
-      "passed": 16,
-      "runs": 16
+      "cost": 8.4,
+      "wallMin": 111,
+      "passed": 20,
+      "runs": 20
     },
     "opus": {
-      "cost": 13.23,
-      "wallMin": 103,
-      "passed": 16,
-      "runs": 16
+      "cost": 16.2,
+      "wallMin": 128,
+      "passed": 20,
+      "runs": 20
     }
   },
   "second": {
@@ -358,20 +358,100 @@ export const GATE_RESULTS = {
         "wallMin": 4.0,
         "passed": true
       }
+    },
+    {
+      "task": "flipt-c188284f",
+      "repo": "flipt",
+      "title": "OCI storage cannot authenticate against AWS ECR registries",
+      "category": "multi_file_change",
+      "gate": {
+        "cost": 0.4494,
+        "wallMin": 3.6,
+        "passed": true,
+        "route": [
+          "Sonnet 5.5 at high"
+        ],
+        "ownCalls": 0.0703
+      },
+      "opus": {
+        "cost": 0.8239,
+        "wallMin": 6.4,
+        "passed": true
+      }
+    },
+    {
+      "task": "flipt-cd18e54a",
+      "repo": "flipt",
+      "title": "Default Flipt configuration does not validate against the CUE schema",
+      "category": "multi_file_change",
+      "gate": {
+        "cost": 0.6729,
+        "wallMin": 9.4,
+        "passed": true,
+        "route": [
+          "Sonnet 5.5 at high"
+        ],
+        "ownCalls": 0.0203
+      },
+      "opus": {
+        "cost": 1.2205,
+        "wallMin": 11.9,
+        "passed": true
+      }
+    },
+    {
+      "task": "flipt-e2bd19da",
+      "repo": "flipt",
+      "title": "Flag lookups are cached only in the gRPC interceptor and clients cannot opt out of cached values",
+      "category": "multi_file_change",
+      "gate": {
+        "cost": 0.433,
+        "wallMin": 6.1,
+        "passed": true,
+        "route": [
+          "Sonnet 5.5 at high"
+        ],
+        "ownCalls": 0.0901
+      },
+      "opus": {
+        "cost": 0.4943,
+        "wallMin": 4.1,
+        "passed": true
+      }
+    },
+    {
+      "task": "navidrome-69e0a266",
+      "repo": "navidrome",
+      "title": "Remove size from public image ID JWT",
+      "category": "multi_file_change",
+      "gate": {
+        "cost": 0.3114,
+        "wallMin": 2.1,
+        "passed": true,
+        "route": [
+          "Sonnet 5.5 at high"
+        ],
+        "ownCalls": 0.0783
+      },
+      "opus": {
+        "cost": 0.4327,
+        "wallMin": 2.3,
+        "passed": true
+      }
     }
   ],
   "spend": {
     "escalated": 0.21,
-    "gate:classify": 0.0061,
-    "gate:criteria": 0.3278,
-    "gate:judge": 0.6447,
-    "work": 5.3483
+    "gate:classify": 0.0076,
+    "gate:criteria": 0.4083,
+    "gate:judge": 0.8217,
+    "work": 6.956
   },
   "calls": {
-    "gate:classify": 16,
-    "gate:criteria": 16,
-    "work": 317,
-    "gate:judge": 13,
+    "gate:classify": 20,
+    "gate:criteria": 20,
+    "work": 412,
+    "gate:judge": 16,
     "escalated": 8
   },
   "iterations": [
@@ -499,7 +579,7 @@ export const GATE_RESULTS = {
       "compare": 37,
       "at": "Nov 22, 01:14",
       "before": "A turn that ran its change itself is not nudged (d07d3e3a)",
-      "found": "All 16 tasks started on Sonnet. One moved up to Opus after the judge found a gap, and all 16 passed.",
+      "found": "Every task started on Sonnet. One moved up to Opus after the judge found a gap, and every task passed on both arms.",
       "gate": {
         "cost": 1.51,
         "wallMin": 10,
